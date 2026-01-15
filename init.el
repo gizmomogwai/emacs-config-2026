@@ -113,7 +113,7 @@
 
       ;; Ui
       (put 'inhibit-startup-echo-area-message 'saved-value t)
-      (setq 
+      (setq
         initial-scratch-message ";; Welcome back!!!\n\n"
         inhibit-startup-message t
         inhibit-startup-echo-area-message (user-login-name)
@@ -224,6 +224,11 @@ point reaches the beginning or end of the buffer, stop there."
       (when (= orig-point (point))
         (move-beginning-of-line 1))))
   (global-set-key [remap move-beginning-of-line] 'smarter-move-beginning-of-line)
+  (defun open-init-file ()
+    "Open the emacs init file"
+    (interactive)
+    (find-file user-init-file)
+    )
   )
 ;; end emacs
 
@@ -268,6 +273,7 @@ point reaches the beginning or end of the buffer, stop there."
 
 (use-package git-timemachine
   :ensure (git-timemachine :type git :host nil :repo "https://codeberg.org/pidu/git-timemachine")
+  :after (magit)
   )
 
 (add-hook 'prog-mode-hook (lambda () (setq show-trailing-whitespace t))
