@@ -324,7 +324,13 @@ point reaches the beginning or end of the buffer, stop there."
 
 (use-package undo-tree
   :ensure t
-  :config (global-undo-tree-mode t)
+  :config
+    (global-undo-tree-mode)
+  :custom
+  (undo-tree-history-directory-alist
+    (list
+      '(".*" . "~/tmp/undo-tree"))
+    )
   )
 
 (use-package tff
@@ -393,6 +399,7 @@ point reaches the beginning or end of the buffer, stop there."
     (key-chord-define-global "bw" 'save-buffer)
     (key-chord-define-global "GS" 'magit-status)
     (key-chord-define-global "GG" 'goto-line)
+    (key-chord-define-global "##" 'comment-line)
     (key-chord-define-global "yy" 'helm-show-kill-ring)
     (key-chord-define-global "TT" 'tff)
     (key-chord-mode 1)
@@ -565,7 +572,7 @@ Project %(projectile-project-root)" ;; initial newline is needed for %() to work
     (d-mode . my-d-mode-setup)
   :config
     (add-to-list 'eglot-server-programs
-                 '(d-mode . ("/Users/christian.koestlin/.code-d/bin/serve-d"))
+                 (cons 'd-mode (list (format "%s/.code-d/bin/serve-d" (getenv "HOME"))))
       )
   )
 ;; end dlang
