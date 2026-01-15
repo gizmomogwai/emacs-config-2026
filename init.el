@@ -289,9 +289,15 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package rust-mode
   :ensure t
   :after (eglot)
+  :custom
+    (exec-path-from-shell-shell-name
+      (pcase system-type
+        ('darwin "/opt/homebrew/bin/fish")
+        )
+      )
   :config
     (add-to-list 'eglot-server-programs
-		 '(rust-mode . ("/Users/christian.koestlin/.cargo/bin/rust-analyzer" :initializationOptions (:check (:command "clippy"))))
+		 (cons 'rust-mode (list (format "%s/.cargo/bin/rust-analyzer" (getenv "HOME")) :initializationOptions (:check (:command "clippy"))))
       )
   )
 
@@ -397,9 +403,10 @@ point reaches the beginning or end of the buffer, stop there."
     (key-chord-define-global "bb" 'helm-mini)
     (key-chord-define-global "BR" 'kill-buffer)
     (key-chord-define-global "bw" 'save-buffer)
+    (key-chord-define-global "CC" 'comment-line)
     (key-chord-define-global "GS" 'magit-status)
     (key-chord-define-global "GG" 'goto-line)
-    (key-chord-define-global "##" 'comment-line)
+    (key-chord-define-global "LL" 'projectile-layout-project)
     (key-chord-define-global "yy" 'helm-show-kill-ring)
     (key-chord-define-global "TT" 'tff)
     (key-chord-mode 1)
