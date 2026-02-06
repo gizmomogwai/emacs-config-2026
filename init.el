@@ -45,23 +45,27 @@
 (elpaca `(,@elpaca-order))
 (elpaca elpaca-use-package (elpaca-use-package-mode))
 
-
 ;; begin emacs
 (use-package emacs
   :demand t
   :bind (
       ([f7] . helm-flymake-or-flycheck)
-    )
+      )
+  :custom-face
+  (fill-column-indicator ((t (:weight semilight :foreground "#773838"))))
   :custom
     (bidi-inhibit-bpa t) ;; performance
     (blink-cursor-mode nil)
     (column-number-mode t)
+    (display-fill-column-indicator t)
+    (display-fill-column-indicator-character ?|)
     (enable-recursive-minibuffers t) ;; minibuffer
     (fast-but-imprecise-scrolling t) ;; performance
     (ffap-machine-p-known 'reject) ;; performance
     (fill-column 120)
     (frame-inhibit-implied-resize t) ;; performance
     (global-auto-revert-mode t)
+    (global-display-fill-column-indicator-mode t)
     (global-hl-line-mode t) ;; highlight
     (indent-tabs-mode nil) ;; spaces instead of tabs
     (indicate-empty-lines t) ;; End of buffer behavior
@@ -91,7 +95,6 @@
     (use-short-answers t)
     (visible-bell nil)
     (truncate-lines t)
-
 
   :config
       (kill-buffer "*scratch*")
@@ -126,13 +129,11 @@
         inhibit-x-resources t
         frame-resize-pixelwise t)
 
-
   ;; Mouse
   (setq mouse-drag-and-drop-region-cross-program t
         mouse-drag-and-drop-region-scroll-margin t
         dnd-indicate-insertion-point t
         dnd-scroll-margin t)
-
 
   ;; Popup windows # TODO
   (setq buffer-quit-function #'akermu/quit-window-dwim)
@@ -617,6 +618,17 @@ Project %(projectile-project-root)" ;; initial newline is needed for %() to work
   :custom
     (nxml-slash-auto-complete-flag t)
   )
+
+(use-package sideline
+  :ensure t)
+ 
+(use-package sideline-blame :ensure t)
+(use-package sideline-color :ensure (sideline-color :type git :host github :repo "emacs-sideline/sideline-color"))
+(use-package sideline-eglot :ensure t)
+(use-package sideline-flycheck :ensure t)
+(use-package sideline-flymake :ensure t)
+(use-package sideline-eldoc :ensure (sideline-eldoc :type git :host github :repo "ginqi7/sideline-eldoc"))
+
 (provide 'init)
 ;;; init.el ends here
 
