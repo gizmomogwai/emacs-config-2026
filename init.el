@@ -49,8 +49,9 @@
 ;; begin emacs
 (use-package emacs
   :demand t
-  :bind
-    ()
+  :bind (
+      ([f7] . helm-flymake-or-flycheck)
+    )
   :custom
     (bidi-inhibit-bpa t) ;; performance
     (blink-cursor-mode nil)
@@ -229,6 +230,14 @@ point reaches the beginning or end of the buffer, stop there."
     (interactive)
     (find-file user-init-file)
     )
+  (defun helm-flymake-or-flycheck ()
+    "Open helm-flymake or helm-flycheck depending on the current mode."
+    (interactive)
+    (cond
+      ((eq flymake-mode 't) (helm-flymake))
+      ((eq flycheck-mode 't) (helm-flycheck))
+      ('t (message "Neither flymake nor flycheck mode active")))
+    )
   )
 ;; end emacs
 
@@ -356,17 +365,19 @@ point reaches the beginning or end of the buffer, stop there."
     (helm-mode +1)
     (global-set-key (kbd "C-x C-f") #'helm-find-files)
     (global-set-key (kbd "M-x") #'helm-M-x)
-    ;; show recentf if emacs is started without arguments
-    (if (< (length command-line-args) 2)
-        (helm-recentf))
+    ;; show recentf if emacs is started without arguments -> bad idea
+    ;; seems to block the rest of init.el in case its canceled with C-g
+    ;;(if (< (length command-line-args) 2)
+    ;;    (helm-recentf))
     )
 
 (use-package helm-flymake
   :ensure (helm-flymake :type git :host github :repo "emacs-helm/helm-flymake")
-  :bind (
-     ([f7] . helm-flymake)
-   )
   )
+(use-package helm-flycheck
+  :ensure (helm-flycheck :type git :host github :repo "yasuyk/helm-flycheck")
+  )
+
 (use-package helm-projectile
   :ensure t)
 
@@ -596,6 +607,11 @@ Project %(projectile-project-root)" ;; initial newline is needed for %() to work
     (with-eval-after-load 'flycheck (flycheck-pos-tip-mode))
   )
 
+(use-package nxml-mode
+  :ensure nil
+  :custom
+    (nxml-slash-auto-complete-flag t)
+  )
 (provide 'init)
 ;;; init.el ends here
 
