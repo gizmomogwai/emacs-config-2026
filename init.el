@@ -310,6 +310,11 @@ point reaches the beginning or end of the buffer, stop there."
       )
   )
 
+(use-package eglot-x
+  :ensure (eglot-x :type git :host github :repo "nemethf/eglot-x.git")
+  :after (eglot)
+  :config (eglot-x-setup)
+  )
 ;; configure org mode
 (use-package org-mode
   :ensure nil ;; use builtin
