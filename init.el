@@ -47,87 +47,87 @@
 
 ;; begin emacs
 (use-package emacs
-  :demand t
-  :bind (
-      ([f7] . helm-flymake-or-flycheck)
-      )
-  :custom-face
-  (fill-column-indicator ((t (:weight semilight :foreground "#773838"))))
+    :demand t
+    :bind (
+           ([f7] . helm-flymake-or-flycheck)
+           )
+    :custom-face
+    (fill-column-indicator ((t (:weight semilight :foreground "#773838"))))
   :custom
-    (bidi-inhibit-bpa t) ;; performance
-    (blink-cursor-mode nil)
-    (column-number-mode t)
-    (display-fill-column-indicator t)
-    (display-fill-column-indicator-character ?|)
-    (enable-recursive-minibuffers t) ;; minibuffer
-    (fast-but-imprecise-scrolling t) ;; performance
-    (ffap-machine-p-known 'reject) ;; performance
-    (fill-column 120)
-    (frame-inhibit-implied-resize t) ;; performance
-    (global-auto-revert-mode t)
-    (global-display-fill-column-indicator-mode t)
-    (global-hl-line-mode t) ;; highlight
-    (indent-tabs-mode nil) ;; spaces instead of tabs
-    (indicate-empty-lines t) ;; End of buffer behavior
-    (inhibit-compacting-font-caches t) ;; performance
-    (inhibit-startup-screen t)
-    (initial-scratch-message "")
-    (kill-whole-line t)
-    (line-number-mode t) ;; highlight
-    (menu-bar-mode nil)
-    (minibuffer-depth-indicate-mode t) ;; minibuffer
-    (mouse-yank-at-point t) ;; Copy and Paste
-    (ns-alternate-modifier 'none)
-    (ns-antialias-text t)
-    (ns-auto-hide-menu-bar nil)
-    (ns-command-modifier 'meta)
-    (pgtk-wait-for-event-timeout 0.001) ;; performance
-    (process-adaptive-read-buffering nil) ;; performance
-    (read-process-output-max (* 1024 1024)) ;; performance
-    (redisplay-skip-fontification-on-input t) ;; performance
-    (ring-bell-function 'ignore)
-    (save-interprogram-paste-before-kill t) ;; Copy and Paste
-    (select-enable-clipboard t) ;; Copy and Paste
-    (select-enable-primary t) ;; Copy and Paste
-    (show-paren-mode t)
-    (tool-bar-mode nil)
-    (tooltip-mode nil) ;; Display tooltips in echo area
-    (use-short-answers t)
-    (visible-bell nil)
-    (truncate-lines t)
+  (bidi-inhibit-bpa t) ;; performance
+  (blink-cursor-mode nil)
+  (column-number-mode t)
+  (display-fill-column-indicator t)
+  (display-fill-column-indicator-character ?|)
+  (enable-recursive-minibuffers t) ;; minibuffer
+  (fast-but-imprecise-scrolling t) ;; performance
+  (ffap-machine-p-known 'reject) ;; performance
+  (fill-column 120)
+  (frame-inhibit-implied-resize t) ;; performance
+  (global-auto-revert-mode t)
+  (global-display-fill-column-indicator-mode t)
+  (global-hl-line-mode t) ;; highlight
+  (indent-tabs-mode nil) ;; spaces instead of tabs
+  (indicate-empty-lines t) ;; End of buffer behavior
+  (inhibit-compacting-font-caches t) ;; performance
+  (inhibit-startup-screen t)
+  (initial-scratch-message "")
+  (kill-whole-line t)
+  (line-number-mode t) ;; highlight
+  (menu-bar-mode nil)
+  (minibuffer-depth-indicate-mode t) ;; minibuffer
+  (mouse-yank-at-point t) ;; Copy and Paste
+  (ns-alternate-modifier 'none)
+  (ns-antialias-text t)
+  (ns-auto-hide-menu-bar nil)
+  (ns-command-modifier 'meta)
+  (pgtk-wait-for-event-timeout 0.001) ;; performance
+  (process-adaptive-read-buffering nil) ;; performance
+  (read-process-output-max (* 1024 1024)) ;; performance
+  (redisplay-skip-fontification-on-input t) ;; performance
+  (ring-bell-function 'ignore)
+  (save-interprogram-paste-before-kill t) ;; Copy and Paste
+  (select-enable-clipboard t) ;; Copy and Paste
+  (select-enable-primary t) ;; Copy and Paste
+  (show-paren-mode t)
+  (tool-bar-mode nil)
+  (tooltip-mode nil) ;; Display tooltips in echo area
+  (use-short-answers t)
+  (visible-bell nil)
+  (truncate-lines t)
 
   :config
-      (kill-buffer "*scratch*")
-      (add-to-list 'initial-frame-alist '(font . "Iosevka Term-19"))
-      (add-to-list 'default-frame-alist '(font . "Iosevka Term-19"))
+  (kill-buffer "*scratch*")
+  (add-to-list 'initial-frame-alist '(font . "Iosevka Term-19"))
+  (add-to-list 'default-frame-alist '(font . "Iosevka Term-19"))
 
-      ;; Disable bidi (might improve display performance)
-      (setq-default bidi-paragraph-direction 'left-to-right
-                    bidi-paragraph-direction 'left-to-right)
+  ;; Disable bidi (might improve display performance)
+  (setq-default bidi-paragraph-direction 'left-to-right
+                bidi-paragraph-direction 'left-to-right)
 
-      (defvar emacs-var-directory (expand-file-name "var/" user-emacs-directory) "Base directory for saving data")
-      (setq auto-save-list-file-prefix (expand-file-name "auto-save/save-" emacs-var-directory))
-      (setq backup-directory-alist `(("." . ,(concat emacs-var-directory "backup"))))
+  (defvar emacs-var-directory (expand-file-name "var/" user-emacs-directory) "Base directory for saving data")
+  (setq auto-save-list-file-prefix (expand-file-name "auto-save/save-" emacs-var-directory))
+  (setq backup-directory-alist `(("." . ,(concat emacs-var-directory "backup"))))
 
-      ;; Customize
-      (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-      (load custom-file t)
-      ;; Enable disabled commands
-      (setq disabled-command-function nil)
+  ;; Customize
+  (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+  (load custom-file t)
+  ;; Enable disabled commands
+  (setq disabled-command-function nil)
 
-      ;; Ui
-      (put 'inhibit-startup-echo-area-message 'saved-value t)
-      (setq
-        initial-scratch-message ";; Welcome back!!!\n\n"
-        inhibit-startup-message t
-        inhibit-startup-echo-area-message (user-login-name)
-        use-dialog-box nil
-        x-gtk-use-system-tooltips nil
-        scroll-preserve-screen-position 1
-        scroll-margin 3
-        scroll-conservatively 101
-        inhibit-x-resources t
-        frame-resize-pixelwise t)
+  ;; Ui
+  (put 'inhibit-startup-echo-area-message 'saved-value t)
+  (setq
+   initial-scratch-message ";; Welcome back!!!\n\n"
+   inhibit-startup-message t
+   inhibit-startup-echo-area-message (user-login-name)
+   use-dialog-box nil
+   x-gtk-use-system-tooltips nil
+   scroll-preserve-screen-position 1
+   scroll-margin 3
+   scroll-conservatively 101
+   inhibit-x-resources t
+   frame-resize-pixelwise t)
 
   ;; Mouse
   (setq mouse-drag-and-drop-region-cross-program t
@@ -235,9 +235,9 @@ point reaches the beginning or end of the buffer, stop there."
     "Open helm-flymake or helm-flycheck depending on the current mode."
     (interactive)
     (cond
-      ((eq flymake-mode 't) (helm-flymake))
-      ((eq flycheck-mode 't) (helm-flycheck))
-      ('t (message "Neither flymake nor flycheck mode active")))
+     ((eq flymake-mode 't) (helm-flymake))
+     ((eq flycheck-mode 't) (helm-flycheck))
+     ('t (message "Neither flymake nor flycheck mode active")))
     )
   )
 ;; end emacs
@@ -245,24 +245,24 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package files
   :ensure nil
   :custom
-    (require-final-newline t)
-    (find-file-visit-truename t)
+  (require-final-newline t)
+  (find-file-visit-truename t)
   )
 
 (use-package calendar
   :ensure nil
   :custom
-    (calendar-date-style 'iso)
-    (calendar-intermonth-header "KW")
-    (calendar-intermonth-text
-     '(propertize
-       (format "%2d"
-               (car
-                (calendar-iso-from-absolute
-                 (calendar-absolute-from-gregorian (list month day year)))))
-       'font-lock-face 'calendar-iso-week-face))
-    (calendar-today-marker 'calendar-today)
-    (calendar-today-visible-hook '(calendar-mark-today))
+  (calendar-date-style 'iso)
+  (calendar-intermonth-header "KW")
+  (calendar-intermonth-text
+   '(propertize
+     (format "%2d"
+             (car
+              (calendar-iso-from-absolute
+               (calendar-absolute-from-gregorian (list month day year)))))
+     'font-lock-face 'calendar-iso-week-face))
+  (calendar-today-marker 'calendar-today)
+  (calendar-today-visible-hook '(calendar-mark-today))
   )
 
 (use-package zenburn-theme
@@ -287,28 +287,28 @@ point reaches the beginning or end of the buffer, stop there."
   )
 
 (add-hook 'prog-mode-hook (lambda () (setq show-trailing-whitespace t))
-  )
+          )
 
 (use-package exec-path-from-shell
   :ensure t
   :demand t
   :config
-    (exec-path-from-shell-initialize)
+  (exec-path-from-shell-initialize)
   )
 
 (use-package rust-mode
   :ensure t
   :after (eglot)
   :custom
-    (exec-path-from-shell-shell-name
-      (pcase system-type
-        ('darwin "/opt/homebrew/bin/fish")
-        )
-      )
+  (exec-path-from-shell-shell-name
+   (pcase system-type
+     ('darwin "/opt/homebrew/bin/fish")
+     )
+   )
   :config
-    (add-to-list 'eglot-server-programs
-		 (cons 'rust-mode (list (format "%s/.cargo/bin/rust-analyzer" (getenv "HOME")) :initializationOptions (:check (:command "clippy"))))
-      )
+  (add-to-list 'eglot-server-programs
+	       (cons 'rust-mode (list (format "%s/.cargo/bin/rust-analyzer" (getenv "HOME")) :initializationOptions (list :check (list :command "clippy"))))
+               )
   )
 
 (use-package eglot-x
@@ -327,33 +327,33 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package org-mode-config
   :after (org-mode)
   :config
-    (defun org-tel-export (link description format)
-      "Export a tel LINK with DESCRIPTION from Org files to FORMAT."
-      (let ((desc (or description link)))
-        (pcase format
-          (`html (format "<a target=\"_blank\" href=\"tel:%s\">%s</a>" link desc))
-          )
+  (defun org-tel-export (link description format)
+    "Export a tel LINK with DESCRIPTION from Org files to FORMAT."
+    (let ((desc (or description link)))
+      (pcase format
+        (`html (format "<a target=\"_blank\" href=\"tel:%s\">%s</a>" link desc))
         )
       )
-    (org-babel-do-load-languages 'org-babel-load-languages
-                                 '(
-                                   (shell . t)
-                                   (dot . t)
-                                   )
-      )
-    (org-link-set-parameters "tel" :export #'org-tel-export
-      )
+    )
+  (org-babel-do-load-languages 'org-babel-load-languages
+                               '(
+                                 (shell . t)
+                                 (dot . t)
+                                 )
+                               )
+  (org-link-set-parameters "tel" :export #'org-tel-export
+                           )
   )
 
 (use-package undo-tree
   :ensure t
   :config
-    (global-undo-tree-mode)
+  (global-undo-tree-mode)
   :custom
   (undo-tree-history-directory-alist
-    (list
-      '(".*" . "~/tmp/undo-tree"))
-    )
+   (list
+    '(".*" . "~/tmp/undo-tree"))
+   )
   )
 
 (use-package tff
@@ -370,14 +370,14 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package helm
   :ensure t
   :config
-    (helm-mode +1)
-    (global-set-key (kbd "C-x C-f") #'helm-find-files)
-    (global-set-key (kbd "M-x") #'helm-M-x)
-    ;; show recentf if emacs is started without arguments -> bad idea
-    ;; seems to block the rest of init.el in case its canceled with C-g
-    ;;(if (< (length command-line-args) 2)
-    ;;    (helm-recentf))
-    )
+  (helm-mode +1)
+  (global-set-key (kbd "C-x C-f") #'helm-find-files)
+  (global-set-key (kbd "M-x") #'helm-M-x)
+  ;; show recentf if emacs is started without arguments -> bad idea
+  ;; seems to block the rest of init.el in case its canceled with C-g
+  ;;(if (< (length command-line-args) 2)
+  ;;    (helm-recentf))
+  )
 
 (use-package helm-flymake
   :ensure (helm-flymake :type git :host github :repo "emacs-helm/helm-flymake")
@@ -414,21 +414,21 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package key-chord
   :ensure t
   :config
-    ;;(key-chord-define-global "FF" 'helm-projectile)
-    (key-chord-define-global "uu" 'undo-tree-visualize)
-    (key-chord-define-global "xx" 'helm-M-x)
-    (key-chord-define-global "BB" 'beginning-of-buffer)
-    (key-chord-define-global "BE" 'end-of-buffer)
-    (key-chord-define-global "bb" 'helm-mini)
-    (key-chord-define-global "BR" 'kill-buffer)
-    (key-chord-define-global "bw" 'save-buffer)
-    (key-chord-define-global "CC" 'comment-line)
-    (key-chord-define-global "GS" 'magit-status)
-    (key-chord-define-global "GG" 'goto-line)
-    (key-chord-define-global "LL" 'projectile-layout-project)
-    (key-chord-define-global "yy" 'helm-show-kill-ring)
-    (key-chord-define-global "TT" 'tff)
-    (key-chord-mode 1)
+  ;;(key-chord-define-global "FF" 'helm-projectile)
+  (key-chord-define-global "uu" 'undo-tree-visualize)
+  (key-chord-define-global "xx" 'helm-M-x)
+  (key-chord-define-global "BB" 'beginning-of-buffer)
+  (key-chord-define-global "BE" 'end-of-buffer)
+  (key-chord-define-global "bb" 'helm-mini)
+  (key-chord-define-global "BR" 'kill-buffer)
+  (key-chord-define-global "bw" 'save-buffer)
+  (key-chord-define-global "CC" 'comment-line)
+  (key-chord-define-global "GS" 'magit-status)
+  (key-chord-define-global "GG" 'goto-line)
+  (key-chord-define-global "LL" 'projectile-layout-project)
+  (key-chord-define-global "yy" 'helm-show-kill-ring)
+  (key-chord-define-global "TT" 'tff)
+  (key-chord-mode 1)
   )
 
 (use-package move-text
@@ -452,14 +452,14 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package projectile
   :ensure t
   :config
-    (projectile-mode 1)
-    (projectile-register-project-type
-      'dlang
-      '("dub.sdl")
-        :compile "~/bin/d build"
-        :test "~/bin/d test && ~/bin/d run dscanner -- --errorFormat=digitalmars --styleCheck"
-        :run "~/bin/d run"
-      )
+  (projectile-mode 1)
+  (projectile-register-project-type
+   'dlang
+   '("dub.sdl")
+   :compile "~/bin/d build"
+   :test "~/bin/d test && ~/bin/d run dscanner -- --errorFormat=digitalmars --styleCheck"
+   :run "~/bin/d run"
+   )
   )
 
 ;; TODO
@@ -499,7 +499,7 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package plantuml-mode
   :ensure t
   :config
-    (plantuml-set-output-type "png")
+  (plantuml-set-output-type "png")
   )
 
 (use-package graphviz-dot-mode
@@ -526,63 +526,63 @@ point reaches the beginning or end of the buffer, stop there."
   :preface (provide 'projectile-hydra)
   :after (hydra projectile key-chord magit deadgrep)
   :config
-    (defhydra projectile-hydra (:columns 4)
-      "
+  (defhydra projectile-hydra (:columns 4)
+    "
 Project %(projectile-project-root)" ;; initial newline is needed for %() to work (see https://github.com/abo-abo/hydra?tab=readme-ov-file#awesome-docstring)
-      ("b" projectile-compile-project "Build")
-      ("c" projectile-invalidate-cache "Clear Cache")
-      ("f" projectile-find-file "Find File")
-      ("g" deadgrep "Ripgrep")
-      ("i" projectile-project-info "Info")
-      ("k" projectile-kill-buffers "Kill Buffers")
-      ("l" projectile-layout-project "Layout")
-      ("o" projectile-multi-occur "Multi Occur")
-      ("q" nil "Cancel" color: blue)
-      ("r" projectile-run-project "Run")
-      ("s" magit-status "Magit")
-      ("t" projectile-test-project "Test")
-      )
-    (key-chord-define-global "PP" 'projectile-hydra/body)
+    ("b" projectile-compile-project "Build")
+    ("c" projectile-invalidate-cache "Clear Cache")
+    ("f" projectile-find-file "Find File")
+    ("g" deadgrep "Ripgrep")
+    ("i" projectile-project-info "Info")
+    ("k" projectile-kill-buffers "Kill Buffers")
+    ("l" projectile-layout-project "Layout")
+    ("o" projectile-multi-occur "Multi Occur")
+    ("q" nil "Cancel" color: blue)
+    ("r" projectile-run-project "Run")
+    ("s" magit-status "Magit")
+    ("t" projectile-test-project "Test")
+    )
+  (key-chord-define-global "PP" 'projectile-hydra/body)
   )
 
 (use-package yafolding
   :ensure (yafolding :type git :host github :repo "vindarel/yafolding.el")
   :after (hydra)
   :config
-    (defun projectile-layout-project ()
-      "Format a project."
-      (interactive)
-      (message "layouting project of type %s in %s" (projectile-project-type) (projectile-project-root))
-      (pcase (projectile-project-type)
-        ('dlang (shell-command "~/bin/d run dfmt -- -i . && ~/bin/d run importsort-d -- --ignore-case --inplace --recursive ."))
-        )
+  (defun projectile-layout-project ()
+    "Format a project."
+    (interactive)
+    (message "layouting project of type %s in %s" (projectile-project-type) (projectile-project-root))
+    (pcase (projectile-project-type)
+      ('dlang (shell-command "~/bin/d run dfmt -- -i . && ~/bin/d run importsort-d -- --ignore-case --inplace --recursive ."))
       )
-    (defhydra yafolding-hydra (:color blue :columns 3)
-      "Fold code based on indentation levels."
-      ("t" yafolding-toggle-element "toggle element")
-      ("s" yafolding-show-element "show element")
-      ("h" yafolding-hide-element "hide element")
-      ("T" yafolding-toggle-all "toggle all")
-      ("S" yafolding-show-all "show all")
-      ("H" yafolding-hide-all "hide all")
-      ("p" yafolding-hide-parent-element "hide parent element")
-      ("i" yafolding-get-indent-level "get indent level")
-      ("g" yafolding-go-parent-element "go parent element"))
-    (global-set-key (kbd "C-c f") 'yafolding-hydra/body)
     )
+  (defhydra yafolding-hydra (:color blue :columns 3)
+    "Fold code based on indentation levels."
+    ("t" yafolding-toggle-element "toggle element")
+    ("s" yafolding-show-element "show element")
+    ("h" yafolding-hide-element "hide element")
+    ("T" yafolding-toggle-all "toggle all")
+    ("S" yafolding-show-all "show all")
+    ("H" yafolding-hide-all "hide all")
+    ("p" yafolding-hide-parent-element "hide parent element")
+    ("i" yafolding-get-indent-level "get indent level")
+    ("g" yafolding-go-parent-element "go parent element"))
+  (global-set-key (kbd "C-c f") 'yafolding-hydra/body)
+  )
 
 ;; begin dlang
 (c-add-style "my-d-mode"
-  '("cc-mode"
-     (c-basic-offset . 4)
-     (c-offsets-alist
-       (arglist-intro . +)
-       (arglist-close . 0)
-       (substatement-open . 0)
-       (statement-cont . +)
-       (inline-open . 0)
-       (label . +)
-       )))
+             '("cc-mode"
+               (c-basic-offset . 4)
+               (c-offsets-alist
+                (arglist-intro . +)
+                (arglist-close . 0)
+                (substatement-open . 0)
+                (statement-cont . +)
+                (inline-open . 0)
+                (label . +)
+                )))
 
 (defun my-d-mode-setup ()
   "Setup indent according to dfmt's defaults."
@@ -595,41 +595,51 @@ Project %(projectile-project-root)" ;; initial newline is needed for %() to work
   :ensure t
   :after (eglot)
   :hook
-    (d-mode . my-d-mode-setup)
+  (d-mode . my-d-mode-setup)
   :config
-    (add-to-list 'eglot-server-programs
-                 (cons 'd-mode (list (format "%s/.code-d/bin/serve-d" (getenv "HOME"))))
-      )
+  (add-to-list 'eglot-server-programs
+               (cons 'd-mode (list (format "%s/.code-d/bin/serve-d" (getenv "HOME"))))
+               )
   )
 ;; end dlang
 
-(use-package flycheck
-  :ensure t
-  :config (global-flycheck-mode 1)
-  :after (exec-path-from-shell)
-  )
-
-(use-package flycheck-pos-tip
-  :ensure t
-  :config
-    (with-eval-after-load 'flycheck (flycheck-pos-tip-mode))
-  )
+;; eglot likes flymake more
+;;(use-package flycheck
+;;  :ensure t
+;;  :config (global-flycheck-mode 1)
+;;  :after (exec-path-from-shell)
+;;  )
+;;
+;;(use-package flycheck-pos-tip
+;;  :ensure t
+;;  :config
+;;    (with-eval-after-load 'flycheck (flycheck-pos-tip-mode))
+;;  )
 
 (use-package nxml-mode
   :ensure nil
   :custom
-    (nxml-slash-auto-complete-flag t)
+  (nxml-slash-auto-complete-flag t)
   )
 
 (use-package sideline
-  :ensure t)
- 
+  :ensure t
+  :custom
+  (sideline-display-backend-name t)
+  (sideline-backends-right '(sideline-blame sideline-eglot))
+  )
+
 (use-package sideline-blame :ensure t)
-(use-package sideline-color :ensure (sideline-color :type git :host github :repo "emacs-sideline/sideline-color"))
 (use-package sideline-eglot :ensure t)
 (use-package sideline-flycheck :ensure t)
 (use-package sideline-flymake :ensure t)
 (use-package sideline-eldoc :ensure (sideline-eldoc :type git :host github :repo "ginqi7/sideline-eldoc"))
+
+(use-package eldoc-box
+  :ensure t)
+
+(use-package jinx
+  :ensure t)
 
 (provide 'init)
 ;;; init.el ends here
