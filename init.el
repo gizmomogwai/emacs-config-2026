@@ -641,6 +641,8 @@ Project %(projectile-project-root)" ;; initial newline is needed for %() to work
 (use-package jinx
   :ensure t)
 
+(use-package minimap
+  :ensure t)
 (provide 'init)
 ;;; init.el ends here
 
