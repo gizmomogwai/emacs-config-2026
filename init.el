@@ -428,6 +428,8 @@ point reaches the beginning or end of the buffer, stop there."
   (key-chord-define-global "LL" 'projectile-layout-project)
   (key-chord-define-global "yy" 'helm-show-kill-ring)
   (key-chord-define-global "TT" 'tff)
+  (key-chord-define-global "NN" 'other-window)
+  (key-chord-define-global "UU" 'xref-find-references)
   (key-chord-mode 1)
   )
 
@@ -484,7 +486,10 @@ point reaches the beginning or end of the buffer, stop there."
   :ensure t
   )
 
-(use-package yaml-mode
+;;(use-package yaml-mode
+;;  :ensure t
+;;  )
+(use-package yaml-pro
   :ensure t
   )
 
