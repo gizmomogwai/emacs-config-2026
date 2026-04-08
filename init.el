@@ -45,6 +45,7 @@
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
 ;; end elpaca installer from https://github.com/progfolio/elpaca#installer
+(setq use-package-verbose t)
 
 (elpaca elpaca-use-package (elpaca-use-package-mode))
 
@@ -100,6 +101,7 @@
   (truncate-lines t)
 
   :config
+  (add-hook 'after-init-hook (lambda () (message "Emacs loaded in %s" (emacs-init-time))))
   (kill-buffer "*scratch*")
   (add-to-list 'initial-frame-alist '(font . "Iosevka Term-19"))
   (add-to-list 'default-frame-alist '(font . "Iosevka Term-19"))
@@ -517,15 +519,20 @@ point reaches the beginning or end of the buffer, stop there."
 (use-package ztree
   :ensure t)
 
-;;(use-package yasnippet-snippets
-;;  :straight t)
-;;
-;;(use-package yasnippet
-;;  :straight t
-;;  :config
-;;      (yas-global-mode 1)
-;;  )
-;;
+(use-package yasnippet
+  :ensure t
+  :config
+  (yas-global-mode 1)
+  :init
+  (add-hook 'eglot-managed-mode-hook (lambda ()
+                                       (add-to-list 'company-backends
+                                                    '(company-capf :with company-yasnippet))))
+  )
+
+(use-package yasnippet-snippets
+  :ensure t
+  :after yasnippet)
+
 
 (use-package hydra
   :ensure t)
