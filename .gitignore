@@ -1,7 +1,10 @@
 elpa
 elpaca
+eln-cache
 var
 \#*
 .\#*
 transient
-.eln-cache
+recentf
+projectile-bookmarks.eld
+*~
