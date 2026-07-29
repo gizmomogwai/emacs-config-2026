@@ -291,8 +291,8 @@ point reaches the beginning or end of the buffer, stop there."
   :after (magit)
   )
 
-(add-hook 'prog-mode-hook (lambda () (setq show-trailing-whitespace t))
-          )
+(use-package jj-mode
+  :ensure (jj-mode :type git :host github :repo "bolivier/jj-mode.el"))
 
 (use-package exec-path-from-shell
   :ensure t
