@@ -47,16 +47,18 @@
 ;; end elpaca installer from https://github.com/progfolio/elpaca#installer
 (setq use-package-verbose t)
 
+(require 'cl-lib)
+
 (elpaca elpaca-use-package (elpaca-use-package-mode))
 
 ;; begin emacs
 (use-package emacs
-    :demand t
-    :bind (
-           ([f7] . helm-flymake-or-flycheck)
-           )
-    :custom-face
-    (fill-column-indicator ((t (:weight semilight :foreground "#773838"))))
+  :demand t
+  :bind (
+         ([f7] . helm-flymake-or-flycheck)
+         )
+  :custom-face
+  (fill-column-indicator ((t (:weight semilight :foreground "#773838"))))
   :custom
   (bidi-inhibit-bpa t) ;; performance
   (blink-cursor-mode nil)
@@ -100,8 +102,11 @@
   (visible-bell nil)
   (truncate-lines t)
 
+  :hook
+  (elpaca-after-init . (lambda () (message "Emacs loaded in %s" (emacs-init-time))))
+  (prog-mode . (lambda () (setq show-trailing-whitespace t)))
+
   :config
-  (add-hook 'after-init-hook (lambda () (message "Emacs loaded in %s" (emacs-init-time))))
   (kill-buffer "*scratch*")
   (add-to-list 'initial-frame-alist '(font . "Iosevka Term-19"))
   (add-to-list 'default-frame-alist '(font . "Iosevka Term-19"))
@@ -291,9 +296,6 @@ point reaches the beginning or end of the buffer, stop there."
   :after (magit)
   )
 
-(use-package jj-mode
-  :ensure (jj-mode :type git :host github :repo "bolivier/jj-mode.el"))
-
 (use-package exec-path-from-shell
   :ensure t
   :demand t
@@ -312,7 +314,10 @@ point reaches the beginning or end of the buffer, stop there."
    )
   :config
   (add-to-list 'eglot-server-programs
-	       (cons 'rust-mode (list (format "%s/.cargo/bin/rust-analyzer" (getenv "HOME")) :initializationOptions (list :check (list :command "clippy"))))
+	       (cons 'rust-mode (list (format "%s/.cargo/bin/rust-analyzer" (getenv "HOME")) :initializationOptions (list :check (list :command "clippy")
+                                                                                                                          :cargo (list :features "all")
+                                                                                                                          )
+                                      ))
                )
   )
 
@@ -320,7 +325,7 @@ point reaches the beginning or end of the buffer, stop there."
   :ensure (eglot-x :type git :host github :repo "nemethf/eglot-x")
   :after (eglot)
   :custom
-    (eglot-report-progress nil)
+  (eglot-report-progress nil)
   :config (eglot-x-setup)
   )
 ;; configure org mode
@@ -384,13 +389,13 @@ point reaches the beginning or end of the buffer, stop there."
   ;;    (helm-recentf))
   )
 
-(use-package helm-flymake
-  :ensure (helm-flymake :type git :host github :repo "emacs-helm/helm-flymake")
-  )
-(use-package helm-flycheck
-  :ensure (helm-flycheck :type git :host github :repo "yasuyk/helm-flycheck")
-  )
-
+;;(use-package helm-flymake
+;;  :ensure (helm-flymake :type git :host github :repo "emacs-helm/helm-flymake")
+;;  )
+;;(use-package helm-flycheck
+;;  :ensure (helm-flycheck :type git :host github :repo "yasuyk/helm-flycheck")
+;;  )
+;;
 (use-package helm-projectile
   :ensure t)
 
@@ -475,8 +480,10 @@ point reaches the beginning or end of the buffer, stop there."
              '(d-scanner
                "\\(.*?\\)(\\(.*?\\):\\(.*?\\))\\[\\(.*?\\)\\]:"
                1 2 3 2))
-;; TODO
+(use-package posframe
+  :ensure t)
 
+;; TODO
 (use-package company
   :ensure t
   :config (global-company-mode 1)
@@ -618,37 +625,24 @@ Project %(projectile-project-root)" ;; initial newline is needed for %() to work
   )
 ;; end dlang
 
-;; eglot likes flymake more
-;;(use-package flycheck
-;;  :ensure t
-;;  :config (global-flycheck-mode 1)
-;;  :after (exec-path-from-shell)
-;;  )
-;;
-;;(use-package flycheck-pos-tip
-;;  :ensure t
-;;  :config
-;;    (with-eval-after-load 'flycheck (flycheck-pos-tip-mode))
-;;  )
-
 (use-package nxml-mode
   :ensure nil
   :custom
   (nxml-slash-auto-complete-flag t)
   )
 
-(use-package sideline
-  :ensure t
-  :custom
-  (sideline-display-backend-name t)
-  (sideline-backends-right '(sideline-blame sideline-eglot))
-  )
+;;(use-package sideline
+;;  :ensure t
+;;  :custom
+;;  (sideline-display-backend-name t)
+;;  (sideline-backends-right '(sideline-blame sideline-eglot))
+;;  )
 
-(use-package sideline-blame :ensure t)
-(use-package sideline-eglot :ensure t)
-(use-package sideline-flycheck :ensure t)
+;;(use-package sideline-blame :ensure t)
+;;(use-package sideline-eglot :ensure t)
+;;(use-package sideline-flycheck :ensure t)
 ;;(use-package sideline-flymake :ensure t)
-(use-package sideline-eldoc :ensure (sideline-eldoc :type git :host github :repo "ginqi7/sideline-eldoc"))
+;;(use-package sideline-eldoc :ensure (sideline-eldoc :type git :host github :repo "ginqi7/sideline-eldoc"))
 
 (use-package eldoc-box
   :ensure t)
@@ -669,87 +663,87 @@ Project %(projectile-project-root)" ;; initial newline is needed for %() to work
   :ensure t
   :init
   (defun meow-setup ()
-  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
-  (meow-motion-define-key
-   '("j" . meow-next)
-   '("k" . meow-prev)
-   '("<escape>" . ignore))
-  (meow-leader-define-key
-   ;; Use SPC (0-9) for digit arguments.
-   '("1" . meow-digit-argument)
-   '("2" . meow-digit-argument)
-   '("3" . meow-digit-argument)
-   '("4" . meow-digit-argument)
-   '("5" . meow-digit-argument)
-   '("6" . meow-digit-argument)
-   '("7" . meow-digit-argument)
-   '("8" . meow-digit-argument)
-   '("9" . meow-digit-argument)
-   '("0" . meow-digit-argument)
-   '("/" . meow-keypad-describe-key)
-   '("?" . meow-cheatsheet))
-  (meow-normal-define-key
-   '("0" . meow-expand-0)
-   '("9" . meow-expand-9)
-   '("8" . meow-expand-8)
-   '("7" . meow-expand-7)
-   '("6" . meow-expand-6)
-   '("5" . meow-expand-5)
-   '("4" . meow-expand-4)
-   '("3" . meow-expand-3)
-   '("2" . meow-expand-2)
-   '("1" . meow-expand-1)
-   '("-" . negative-argument)
-   '(";" . meow-reverse)
-   '("," . meow-inner-of-thing)
-   '("." . meow-bounds-of-thing)
-   '("[" . meow-beginning-of-thing)
-   '("]" . meow-end-of-thing)
-   '("a" . meow-append)
-   '("A" . meow-open-below)
-   '("b" . meow-back-word)
-   '("B" . meow-back-symbol)
-   '("c" . meow-change)
-   '("d" . meow-delete)
-   '("D" . meow-backward-delete)
-   '("e" . meow-next-word)
-   '("E" . meow-next-symbol)
-   '("f" . meow-find)
-   '("g" . meow-cancel-selection)
-   '("G" . meow-grab)
-   '("h" . meow-left)
-   '("H" . meow-left-expand)
-   '("i" . meow-insert)
-   '("I" . meow-open-above)
-   '("j" . meow-next)
-   '("J" . meow-next-expand)
-   '("k" . meow-prev)
-   '("K" . meow-prev-expand)
-   '("l" . meow-right)
-   '("L" . meow-right-expand)
-   '("m" . meow-join)
-   '("n" . meow-search)
-   '("o" . meow-block)
-   '("O" . meow-to-block)
-   '("p" . meow-yank)
-   '("q" . meow-quit)
-   '("Q" . meow-goto-line)
-   '("r" . meow-replace)
-   '("R" . meow-swap-grab)
-   '("s" . meow-kill)
-   '("t" . meow-till)
-   '("u" . meow-undo)
-   '("U" . meow-undo-in-selection)
-   '("v" . meow-visit)
-   '("w" . meow-mark-word)
-   '("W" . meow-mark-symbol)
-   '("x" . meow-line)
-   '("X" . meow-goto-line)
-   '("y" . meow-save)
-   '("Y" . meow-sync-grab)
-   '("z" . meow-pop-selection)
-   '("'" . repeat)
-   '("<escape>" . ignore)))
+    (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+    (meow-motion-define-key
+     '("j" . meow-next)
+     '("k" . meow-prev)
+     '("<escape>" . ignore))
+    (meow-leader-define-key
+     ;; Use SPC (0-9) for digit arguments.
+     '("1" . meow-digit-argument)
+     '("2" . meow-digit-argument)
+     '("3" . meow-digit-argument)
+     '("4" . meow-digit-argument)
+     '("5" . meow-digit-argument)
+     '("6" . meow-digit-argument)
+     '("7" . meow-digit-argument)
+     '("8" . meow-digit-argument)
+     '("9" . meow-digit-argument)
+     '("0" . meow-digit-argument)
+     '("/" . meow-keypad-describe-key)
+     '("?" . meow-cheatsheet))
+    (meow-normal-define-key
+     '("0" . meow-expand-0)
+     '("9" . meow-expand-9)
+     '("8" . meow-expand-8)
+     '("7" . meow-expand-7)
+     '("6" . meow-expand-6)
+     '("5" . meow-expand-5)
+     '("4" . meow-expand-4)
+     '("3" . meow-expand-3)
+     '("2" . meow-expand-2)
+     '("1" . meow-expand-1)
+     '("-" . negative-argument)
+     '(";" . meow-reverse)
+     '("," . meow-inner-of-thing)
+     '("." . meow-bounds-of-thing)
+     '("[" . meow-beginning-of-thing)
+     '("]" . meow-end-of-thing)
+     '("a" . meow-append)
+     '("A" . meow-open-below)
+     '("b" . meow-back-word)
+     '("B" . meow-back-symbol)
+     '("c" . meow-change)
+     '("d" . meow-delete)
+     '("D" . meow-backward-delete)
+     '("e" . meow-next-word)
+     '("E" . meow-next-symbol)
+     '("f" . meow-find)
+     '("g" . meow-cancel-selection)
+     '("G" . meow-grab)
+     '("h" . meow-left)
+     '("H" . meow-left-expand)
+     '("i" . meow-insert)
+     '("I" . meow-open-above)
+     '("j" . meow-next)
+     '("J" . meow-next-expand)
+     '("k" . meow-prev)
+     '("K" . meow-prev-expand)
+     '("l" . meow-right)
+     '("L" . meow-right-expand)
+     '("m" . meow-join)
+     '("n" . meow-search)
+     '("o" . meow-block)
+     '("O" . meow-to-block)
+     '("p" . meow-yank)
+     '("q" . meow-quit)
+     '("Q" . meow-goto-line)
+     '("r" . meow-replace)
+     '("R" . meow-swap-grab)
+     '("s" . meow-kill)
+     '("t" . meow-till)
+     '("u" . meow-undo)
+     '("U" . meow-undo-in-selection)
+     '("v" . meow-visit)
+     '("w" . meow-mark-word)
+     '("W" . meow-mark-symbol)
+     '("x" . meow-line)
+     '("X" . meow-goto-line)
+     '("y" . meow-save)
+     '("Y" . meow-sync-grab)
+     '("z" . meow-pop-selection)
+     '("'" . repeat)
+     '("<escape>" . ignore)))
   :config
   (meow-setup)
   ;;(meow-global-mode 1)
@@ -758,14 +752,8 @@ Project %(projectile-project-root)" ;; initial newline is needed for %() to work
 (use-package flycheck
   :ensure t
   :hook
-    (
-      (after-init . global-flycheck-mode)
-      ;; Show diagnostics inline, next to the code (Error Lens style)
-      (after-init . global-flycheck-annotate-mode))
-  :config
-  ;; Report Eglot's LSP diagnostics through Flycheck
-    (global-flycheck-eglot-mode 1))
+  (elpaca-after-init . (lambda () (progn (message "Enabling global-flycheck-mode") (global-flycheck-mode 1) (global-flycheck-annotate-mode 1) (global-flycheck-eglot-mode 1))))
+  )
 
 (provide 'init)
 ;;; init.el ends here
-
