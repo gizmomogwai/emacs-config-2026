@@ -58,200 +58,200 @@
          ([f7] . helm-flymake-or-flycheck)
          )
   :custom-face
-    (fill-column-indicator ((t (:weight semilight :foreground "#773838"))))
+  (fill-column-indicator ((t (:weight semilight :foreground "#773838"))))
   :custom
-    (bidi-inhibit-bpa t) ;; performance
-    (blink-cursor-mode nil)
-    (column-number-mode t)
-    (display-fill-column-indicator t)
-    (display-fill-column-indicator-character ?|)
-    (enable-recursive-minibuffers t) ;; minibuffer
-    (fast-but-imprecise-scrolling t) ;; performance
-    (ffap-machine-p-known 'reject) ;; performance
-    (fill-column 120)
-    (frame-inhibit-implied-resize t) ;; performance
-    (global-auto-revert-mode t)
-    (global-display-fill-column-indicator-mode t)
-    (global-hl-line-mode t) ;; highlight
-    (indent-tabs-mode nil) ;; spaces instead of tabs
-    (indicate-empty-lines t) ;; End of buffer behavior
-    (inhibit-compacting-font-caches t) ;; performance
-    (inhibit-startup-screen t)
-    (initial-scratch-message "")
-    (kill-whole-line t)
-    (line-number-mode t) ;; highlight
-    (menu-bar-mode nil)
-    (minibuffer-depth-indicate-mode t) ;; minibuffer
-    (mouse-yank-at-point t) ;; Copy and Paste
-    (ns-alternate-modifier 'none)
-    (ns-antialias-text t)
-    (ns-auto-hide-menu-bar nil)
-    (ns-command-modifier 'meta)
-    (pgtk-wait-for-event-timeout 0.001) ;; performance
-    (process-adaptive-read-buffering nil) ;; performance
-    (read-process-output-max (* 1024 1024)) ;; performance
-    (redisplay-skip-fontification-on-input t) ;; performance
-    (ring-bell-function 'ignore)
-    (save-interprogram-paste-before-kill t) ;; Copy and Paste
-    (select-enable-clipboard t) ;; Copy and Paste
-    (select-enable-primary t) ;; Copy and Paste
-    (show-paren-mode t)
-    (tool-bar-mode nil)
-    (tooltip-mode nil) ;; Display tooltips in echo area
-    (use-short-answers t)
-    (visible-bell nil)
-    (truncate-lines t)
+  (bidi-inhibit-bpa t) ;; performance
+  (blink-cursor-mode nil)
+  (column-number-mode t)
+  (display-fill-column-indicator t)
+  (display-fill-column-indicator-character ?|)
+  (enable-recursive-minibuffers t) ;; minibuffer
+  (fast-but-imprecise-scrolling t) ;; performance
+  (ffap-machine-p-known 'reject) ;; performance
+  (fill-column 120)
+  (frame-inhibit-implied-resize t) ;; performance
+  (global-auto-revert-mode t)
+  (global-display-fill-column-indicator-mode t)
+  (global-hl-line-mode t) ;; highlight
+  (indent-tabs-mode nil) ;; spaces instead of tabs
+  (indicate-empty-lines t) ;; End of buffer behavior
+  (inhibit-compacting-font-caches t) ;; performance
+  (inhibit-startup-screen t)
+  (initial-scratch-message "")
+  (kill-whole-line t)
+  (line-number-mode t) ;; highlight
+  (menu-bar-mode nil)
+  (minibuffer-depth-indicate-mode t) ;; minibuffer
+  (mouse-yank-at-point t) ;; Copy and Paste
+  (ns-alternate-modifier 'none)
+  (ns-antialias-text t)
+  (ns-auto-hide-menu-bar nil)
+  (ns-command-modifier 'meta)
+  (pgtk-wait-for-event-timeout 0.001) ;; performance
+  (process-adaptive-read-buffering nil) ;; performance
+  (read-process-output-max (* 1024 1024)) ;; performance
+  (redisplay-skip-fontification-on-input t) ;; performance
+  (ring-bell-function 'ignore)
+  (save-interprogram-paste-before-kill t) ;; Copy and Paste
+  (select-enable-clipboard t) ;; Copy and Paste
+  (select-enable-primary t) ;; Copy and Paste
+  (show-paren-mode t)
+  (tool-bar-mode nil)
+  (tooltip-mode nil) ;; Display tooltips in echo area
+  (use-short-answers t)
+  (visible-bell nil)
+  (truncate-lines t)
 
   :hook
-    (elpaca-after-init . (lambda () (message "Emacs loaded in %s" (emacs-init-time))))
-    (prog-mode . (lambda () (setq show-trailing-whitespace t)))
+  (elpaca-after-init . (lambda () (message "Emacs loaded in %s" (emacs-init-time))))
+  (prog-mode . (lambda () (setq show-trailing-whitespace t)))
   :bind
-   (
-      ([remap move-beginning-of-line] . smarter-move-beginning-of-line)
-    )
+  (
+   ([remap move-beginning-of-line] . smarter-move-beginning-of-line)
+   )
   :config
-    (kill-buffer "*scratch*")
-    (add-to-list 'initial-frame-alist '(font . "Iosevka Term-19"))
-    (add-to-list 'default-frame-alist '(font . "Iosevka Term-19"))
+  (kill-buffer "*scratch*")
+  (add-to-list 'initial-frame-alist '(font . "Iosevka Term-19"))
+  (add-to-list 'default-frame-alist '(font . "Iosevka Term-19"))
 
-    ;; Disable bidi (might improve display performance)
-    (setq-default bidi-paragraph-direction 'left-to-right
-                  bidi-paragraph-direction 'left-to-right)
+  ;; Disable bidi (might improve display performance)
+  (setq-default bidi-paragraph-direction 'left-to-right
+                bidi-paragraph-direction 'left-to-right)
 
-    (defvar emacs-var-directory (expand-file-name "var/" user-emacs-directory) "Base directory for saving data")
-    (setq auto-save-list-file-prefix (expand-file-name "auto-save/save-" emacs-var-directory))
-    (setq backup-directory-alist `(("." . ,(concat emacs-var-directory "backup"))))
+  (defvar emacs-var-directory (expand-file-name "var/" user-emacs-directory) "Base directory for saving data")
+  (setq auto-save-list-file-prefix (expand-file-name "auto-save/save-" emacs-var-directory))
+  (setq backup-directory-alist `(("." . ,(concat emacs-var-directory "backup"))))
 
-    ;; Customize
-    (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-    (load custom-file t)
-    ;; Enable disabled commands
-    (setq disabled-command-function nil)
+  ;; Customize
+  (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+  (load custom-file t)
+  ;; Enable disabled commands
+  (setq disabled-command-function nil)
 
-    ;; Ui
-    (put 'inhibit-startup-echo-area-message 'saved-value t)
-    (setq
-     initial-scratch-message ";; Welcome back!!!\n\n"
-     inhibit-startup-message t
-     inhibit-startup-echo-area-message (user-login-name)
-     use-dialog-box nil
-     x-gtk-use-system-tooltips nil
-     scroll-preserve-screen-position 1
-     scroll-margin 3
-     scroll-conservatively 101
-     inhibit-x-resources t
-     frame-resize-pixelwise t)
+  ;; Ui
+  (put 'inhibit-startup-echo-area-message 'saved-value t)
+  (setq
+   initial-scratch-message ";; Welcome back!!!\n\n"
+   inhibit-startup-message t
+   inhibit-startup-echo-area-message (user-login-name)
+   use-dialog-box nil
+   x-gtk-use-system-tooltips nil
+   scroll-preserve-screen-position 1
+   scroll-margin 3
+   scroll-conservatively 101
+   inhibit-x-resources t
+   frame-resize-pixelwise t)
 
-    ;; Mouse
-    (setq mouse-drag-and-drop-region-cross-program t
-          mouse-drag-and-drop-region-scroll-margin t
-          dnd-indicate-insertion-point t
-          dnd-scroll-margin t)
+  ;; Mouse
+  (setq mouse-drag-and-drop-region-cross-program t
+        mouse-drag-and-drop-region-scroll-margin t
+        dnd-indicate-insertion-point t
+        dnd-scroll-margin t)
 
-    ;; Popup windows # TODO
-    (setq buffer-quit-function #'akermu/quit-window-dwim)
-    (defvar akermu/popup-buffer-regexp (rx bos (or "*compilation*"
-                                                   " *undo-tree*"
-                                                   "*Occur*"
-                                                   "*grep*"
-                                                   "*Warnings*"
-                                                   "*Agenda Commands*"
-                                                   "*Compile-Log*"
-                                                   " *Org todo*"
-                                                   "*Org Select*"
-                                                   "*Org Clock*"
-                                                   "*Org Links*"
-                                                   " *Agenda Commands*"
-                                                   "sendmail errors"
-                                                   "*GHC Error*"
-                                                   "*rustfmt-error*"
-                                                   "*xref*"
-                                                   "*ggtags-global*")
-                                           eos))
+  ;; Popup windows # TODO
+  (setq buffer-quit-function #'akermu/quit-window-dwim)
+  (defvar akermu/popup-buffer-regexp (rx bos (or "*compilation*"
+                                                 " *undo-tree*"
+                                                 "*Occur*"
+                                                 "*grep*"
+                                                 "*Warnings*"
+                                                 "*Agenda Commands*"
+                                                 "*Compile-Log*"
+                                                 " *Org todo*"
+                                                 "*Org Select*"
+                                                 "*Org Clock*"
+                                                 "*Org Links*"
+                                                 " *Agenda Commands*"
+                                                 "sendmail errors"
+                                                 "*GHC Error*"
+                                                 "*rustfmt-error*"
+                                                 "*xref*"
+                                                 "*ggtags-global*")
+                                         eos))
 
-    (add-to-list 'display-buffer-alist
-                 `(,akermu/popup-buffer-regexp
-                   (display-buffer-reuse-window
-                    display-buffer-in-side-window)
-                   (side            . bottom)
-                   (window-height   . 0.4)))
+  (add-to-list 'display-buffer-alist
+               `(,akermu/popup-buffer-regexp
+                 (display-buffer-reuse-window
+                  display-buffer-in-side-window)
+                 (side            . bottom)
+                 (window-height   . 0.4)))
 
-    (add-to-list 'display-buffer-alist
-                 '((major-mode . grep-mode)
-                   (display-buffer-reuse-window
-                    display-buffer-in-side-window)
-                   (side            . bottom)
-                   (window-height   . 0.4)))
+  (add-to-list 'display-buffer-alist
+               '((major-mode . grep-mode)
+                 (display-buffer-reuse-window
+                  display-buffer-in-side-window)
+                 (side            . bottom)
+                 (window-height   . 0.4)))
 
-    (add-to-list 'display-buffer-alist
-                 '((lambda (&rest _)
-                     (eq this-command 'compile-goto-error))
-                   (display-buffer-reuse-window
-                    display-buffer-use-some-window)
-                   (inhibit-same-window . t)))
+  (add-to-list 'display-buffer-alist
+               '((lambda (&rest _)
+                   (eq this-command 'compile-goto-error))
+                 (display-buffer-reuse-window
+                  display-buffer-use-some-window)
+                 (inhibit-same-window . t)))
 
-    (add-to-list 'display-buffer-alist
-                 `(,(rx bos "CAPTURE-" (* ascii) ".org" eos)
-                   (display-buffer-reuse-window
-                    display-buffer-in-side-window)
-                   (side            . bottom)
-                   (window-height   . 0.5)))
+  (add-to-list 'display-buffer-alist
+               `(,(rx bos "CAPTURE-" (* ascii) ".org" eos)
+                 (display-buffer-reuse-window
+                  display-buffer-in-side-window)
+                 (side            . bottom)
+                 (window-height   . 0.5)))
 
-    ;; Make other-window not repeatable
-    (setq other-window-repeat-map nil)
+  ;; Make other-window not repeatable
+  (setq other-window-repeat-map nil)
 
-    (defun akermu/quit-window-dwim ()
-      "Quit side windows of the current frame."
-      (interactive)
-      (if (and (boundp 'eldoc-box--frame) (frame-visible-p eldoc-box--frame))
-          (eldoc-box-quit-frame)
-        (let (deleted)
-          (dolist (window (window-at-side-list) deleted)
-            (when (eq 0 (string-match akermu/popup-buffer-regexp
-                                      (buffer-name (window-buffer window))))
-              (setq deleted t)
-              (delete-window window)))
-          (unless deleted
-            (delete-other-windows))))
-      )
+  (defun akermu/quit-window-dwim ()
+    "Quit side windows of the current frame."
+    (interactive)
+    (if (and (boundp 'eldoc-box--frame) (frame-visible-p eldoc-box--frame))
+        (eldoc-box-quit-frame)
+      (let (deleted)
+        (dolist (window (window-at-side-list) deleted)
+          (when (eq 0 (string-match akermu/popup-buffer-regexp
+                                    (buffer-name (window-buffer window))))
+            (setq deleted t)
+            (delete-window window)))
+        (unless deleted
+          (delete-other-windows))))
+    )
 
-    ;; auto update recent files
-    (run-at-time t (* 5 60) 'recentf-save-list)
+  ;; auto update recent files
+  (run-at-time t (* 5 60) 'recentf-save-list)
 
-    ;; maximize window on startup
-    (toggle-frame-maximized)
+  ;; maximize window on startup
+  (toggle-frame-maximized)
 
-    (defun smarter-move-beginning-of-line (arg)
-      "Move point back to indentation or beginning of line.
+  (defun smarter-move-beginning-of-line (arg)
+    "Move point back to indentation or beginning of line.
        Move point to the first non-whitespace character on this line.
        If point is already there, move to the beginning of the line.
        Effectively toggle between the first non-whitespace character and
        the beginning of the line.
        If ARG is not nil or 1, move forward ARG - 1 lines first.  If
        point reaches the beginning or end of the buffer, stop there."
-      (interactive "^p")
-      (setq arg (or arg 1))
-      (when (/= arg 1)
-        (let ((line-move-visual nil))
-          (forward-line (1- arg))))
-      (let ((orig-point (point)))
-        (back-to-indentation)
-        (when (= orig-point (point))
-          (move-beginning-of-line 1))))
-    (defun open-init-file ()
-      "Open the emacs init file"
-      (interactive)
-      (find-file user-init-file)
-      )
-    (defun helm-flymake-or-flycheck ()
-      "Open helm-flymake or helm-flycheck depending on the current mode."
-      (interactive)
-      (cond
-       ((eq flymake-mode 't) (helm-flymake))
-       ((eq flycheck-mode 't) (helm-flycheck))
-       ('t (message "Neither flymake nor flycheck mode active")))
-      )
-    ) ;; end emacs
+    (interactive "^p")
+    (setq arg (or arg 1))
+    (when (/= arg 1)
+      (let ((line-move-visual nil))
+        (forward-line (1- arg))))
+    (let ((orig-point (point)))
+      (back-to-indentation)
+      (when (= orig-point (point))
+        (move-beginning-of-line 1))))
+  (defun open-init-file ()
+    "Open the emacs init file"
+    (interactive)
+    (find-file user-init-file)
+    )
+  (defun helm-flymake-or-flycheck ()
+    "Open helm-flymake or helm-flycheck depending on the current mode."
+    (interactive)
+    (cond
+     ((eq flymake-mode 't) (helm-flymake))
+     ((eq flycheck-mode 't) (helm-flycheck))
+     ('t (message "Neither flymake nor flycheck mode active")))
+    )
+  ) ;; end emacs
 
 (use-package files
   :ensure nil
@@ -370,9 +370,9 @@
 (use-package tff
   :ensure (tff :type git :host github :repo "gizmomogwai/tff")
   :bind
-    (
-      ("C-1" . tff)
-     ))
+  (
+   ("C-1" . tff)
+   ))
 
 ;; dont like how the fuzzy searching works here
 ;;(use-package selectrum
@@ -386,10 +386,10 @@
   :config
   (helm-mode +1)
   :bind
-    (
-      ("C-x C-f" . helm-find-files)
-      ("M-x" . helm-M-x)
-    ))
+  (
+   ("C-x C-f" . helm-find-files)
+   ("M-x" . helm-M-x)
+   ))
 
 ;;(use-package helm-flymake
 ;;  :ensure (helm-flymake :type git :host github :repo "emacs-helm/helm-flymake")
@@ -762,23 +762,23 @@ Project %(projectile-project-root)" ;; initial newline is needed for %() to work
 (use-package outline-indent
   :ensure t
   :after
-    (undo-tree)
-;;  :commands
-;;    (outline-indent-minor-mode)
+  (undo-tree)
+  ;;  :commands
+  ;;    (outline-indent-minor-mode)
   :custom
-    (outline-indent-ellipsis " ▼")
-    (outline-blank-line t)
+  (outline-indent-ellipsis " ▼")
+  (outline-blank-line t)
   :bind
-    (
-      ("C-+" . outline-indent-open-fold)
-      ("C--" . outline-indent-close-fold)
-      ("C-*" . outline-indent-open-folds)
-      ("C-<tab>" . outline-indent-toggle-fold)
-      :map undo-tree-map
-        ("C-_" . outline-indent-close-folds)
-      )
-    :hook
-      (prog-mode . (lambda () (outline-indent-minor-mode)))
+  (
+   ("C-+" . outline-indent-open-fold)
+   ("C--" . outline-indent-close-fold)
+   ("C-*" . outline-indent-open-folds)
+   ("C-<tab>" . outline-indent-toggle-fold)
+   :map undo-tree-map
+   ("C-_" . outline-indent-close-folds)
+   )
+  :hook
+  (prog-mode . (lambda () (outline-indent-minor-mode)))
   )
 
 (provide 'init)
