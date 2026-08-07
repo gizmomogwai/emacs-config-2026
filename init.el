@@ -789,5 +789,9 @@ Project %(projectile-project-root)" ;; initial newline is needed for %() to work
   :hook
   (prog-mode . indent-bars-mode)
   )
+
+(use-package jj-mode
+  :ensure (jj-mode :type git :host github :repo "bolivier/jj-mode.el"))
+
 (provide 'init)
 ;;; init.el ends here
