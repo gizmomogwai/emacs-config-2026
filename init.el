@@ -54,11 +54,15 @@
 ;; begin emacs
 (use-package emacs
   :demand t
+
   :bind (
-         ([f7] . helm-flymake-or-flycheck)
+         ([f7] . helm-flycheck-or-flymake)
+         ([remap move-beginning-of-line] . smarter-move-beginning-of-line)
          )
+
   :custom-face
   (fill-column-indicator ((t (:weight semilight :foreground "#773838"))))
+
   :custom
   (bidi-inhibit-bpa t) ;; performance
   (blink-cursor-mode nil)
@@ -105,10 +109,7 @@
   :hook
   (elpaca-after-init . (lambda () (message "Emacs loaded in %s" (emacs-init-time))))
   (prog-mode . (lambda () (setq show-trailing-whitespace t)))
-  :bind
-  (
-   ([remap move-beginning-of-line] . smarter-move-beginning-of-line)
-   )
+
   :config
   (kill-buffer "*scratch*")
   (add-to-list 'initial-frame-alist '(font . "Iosevka Term-19"))
@@ -243,12 +244,12 @@
     (interactive)
     (find-file user-init-file)
     )
-  (defun helm-flymake-or-flycheck ()
+  (defun helm-flycheck-or-flymake ()
     "Open helm-flymake or helm-flycheck depending on the current mode."
     (interactive)
     (cond
-     ((eq flymake-mode 't) (helm-flymake))
-     ((eq flycheck-mode 't) (helm-flycheck))
+     ((and (boundp 'flycheck-mode) (eq flycheck-mode 't)) (helm-flycheck))
+     ((and (boundp 'flymake-mode) (eq flymake-mode 't)) (helm-flymake))
      ('t (message "Neither flymake nor flycheck mode active")))
     )
   ) ;; end emacs
@@ -394,9 +395,9 @@
 ;;(use-package helm-flymake
 ;;  :ensure (helm-flymake :type git :host github :repo "emacs-helm/helm-flymake")
 ;;  )
-;;(use-package helm-flycheck
-;;  :ensure (helm-flycheck :type git :host github :repo "yasuyk/helm-flycheck")
-;;  )
+(use-package helm-flycheck
+  :ensure (helm-flycheck :type git :host github :repo "yasuyk/helm-flycheck")
+  )
 ;;
 (use-package helm-projectile
   :ensure t)
@@ -761,13 +762,13 @@ Project %(projectile-project-root)" ;; initial newline is needed for %() to work
 
 (use-package outline-indent
   :ensure t
-  :after
-  (undo-tree)
-  ;;  :commands
-  ;;    (outline-indent-minor-mode)
+
+  :after (undo-tree)
+
   :custom
   (outline-indent-ellipsis " ▼")
   (outline-blank-line t)
+
   :bind
   (
    ("C-+" . outline-indent-open-fold)
@@ -777,9 +778,16 @@ Project %(projectile-project-root)" ;; initial newline is needed for %() to work
    :map undo-tree-map
    ("C-_" . outline-indent-close-folds)
    )
+
   :hook
   (prog-mode . (lambda () (outline-indent-minor-mode)))
   )
 
+(use-package indent-bars
+  :ensure t
+
+  :hook
+  (prog-mode . indent-bars-mode)
+  )
 (provide 'init)
 ;;; init.el ends here
