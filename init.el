@@ -11,32 +11,32 @@
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
 (defvar elpaca-sources-directory (expand-file-name "sources/" elpaca-directory))
 (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
-                              :ref nil :depth 1 :inherit ignore
-                              :files (:defaults "elpaca-test.el" (:exclude "extensions"))
-                              :build (:not elpaca-activate)))
+                        :ref nil :depth 1 :inherit ignore
+                        :files (:defaults "elpaca-test.el" (:exclude "extensions"))
+                        :build (:not elpaca-activate)))
 (let* ((repo  (expand-file-name "elpaca/" elpaca-sources-directory))
-       (build (expand-file-name "elpaca/" elpaca-builds-directory))
-       (order (cdr elpaca-order))
-       (default-directory repo))
+        (build (expand-file-name "elpaca/" elpaca-builds-directory))
+        (order (cdr elpaca-order))
+        (default-directory repo))
   (add-to-list 'load-path (if (file-exists-p build) build repo))
   (unless (file-exists-p repo)
     (make-directory repo t)
     (when (<= emacs-major-version 28) (require 'subr-x))
     (condition-case-unless-debug err
-        (if-let* ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
-                  ((zerop (apply #'call-process `("git" nil ,buffer t "clone"
+      (if-let* ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
+                 ((zerop (apply #'call-process `("git" nil ,buffer t "clone"
                                                   ,@(when-let* ((depth (plist-get order :depth)))
                                                       (list (format "--depth=%d" depth) "--no-single-branch"))
                                                   ,(plist-get order :repo) ,repo))))
-                  ((zerop (call-process "git" nil buffer t "checkout"
-                                        (or (plist-get order :ref) "--"))))
-                  (emacs (concat invocation-directory invocation-name))
-                  ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
-                                        "--eval" "(byte-recompile-directory \".\" 0 'force)")))
-                  ((require 'elpaca))
-                  ((elpaca-generate-autoloads "elpaca" repo)))
-            (progn (message "%s" (buffer-string)) (kill-buffer buffer))
-          (error "%s" (with-current-buffer buffer (buffer-string))))
+                 ((zerop (call-process "git" nil buffer t "checkout"
+                           (or (plist-get order :ref) "--"))))
+                 (emacs (concat invocation-directory invocation-name))
+                 ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
+                           "--eval" "(byte-recompile-directory \".\" 0 'force)")))
+                 ((require 'elpaca))
+                 ((elpaca-generate-autoloads "elpaca" repo)))
+        (progn (message "%s" (buffer-string)) (kill-buffer buffer))
+        (error "%s" (with-current-buffer buffer (buffer-string))))
       ((error) (warn "%s" err) (delete-directory repo 'recursive))))
   (unless (require 'elpaca-autoloads nil t)
     (require 'elpaca)
@@ -56,10 +56,10 @@
   :demand t
 
   :bind (
-         ([f7] . helm-flycheck-or-flymake)
-         ([remap move-beginning-of-line] . smarter-move-beginning-of-line)
-         )
-
+          ([f7] . helm-flycheck-or-flymake)
+          ([remap move-beginning-of-line] . smarter-move-beginning-of-line)
+          )
+  
   :custom-face
   (fill-column-indicator ((t (:weight semilight :foreground "#773838"))))
 
@@ -117,7 +117,7 @@
 
   ;; Disable bidi (might improve display performance)
   (setq-default bidi-paragraph-direction 'left-to-right
-                bidi-paragraph-direction 'left-to-right)
+    bidi-paragraph-direction 'left-to-right)
 
   (defvar emacs-var-directory (expand-file-name "var/" user-emacs-directory) "Base directory for saving data")
   (setq auto-save-list-file-prefix (expand-file-name "auto-save/save-" emacs-var-directory))
@@ -132,71 +132,71 @@
   ;; Ui
   (put 'inhibit-startup-echo-area-message 'saved-value t)
   (setq
-   initial-scratch-message ";; Welcome back!!!\n\n"
-   inhibit-startup-message t
-   inhibit-startup-echo-area-message (user-login-name)
-   use-dialog-box nil
-   x-gtk-use-system-tooltips nil
-   scroll-preserve-screen-position 1
-   scroll-margin 3
-   scroll-conservatively 101
-   inhibit-x-resources t
-   frame-resize-pixelwise t)
+    initial-scratch-message ";; Welcome back!!!\n\n"
+    inhibit-startup-message t
+    inhibit-startup-echo-area-message (user-login-name)
+    use-dialog-box nil
+    x-gtk-use-system-tooltips nil
+    scroll-preserve-screen-position 1
+    scroll-margin 3
+    scroll-conservatively 101
+    inhibit-x-resources t
+    frame-resize-pixelwise t)
 
   ;; Mouse
   (setq mouse-drag-and-drop-region-cross-program t
-        mouse-drag-and-drop-region-scroll-margin t
-        dnd-indicate-insertion-point t
-        dnd-scroll-margin t)
+    mouse-drag-and-drop-region-scroll-margin t
+    dnd-indicate-insertion-point t
+    dnd-scroll-margin t)
 
   ;; Popup windows # TODO
   (setq buffer-quit-function #'akermu/quit-window-dwim)
   (defvar akermu/popup-buffer-regexp (rx bos (or "*compilation*"
-                                                 " *undo-tree*"
-                                                 "*Occur*"
-                                                 "*grep*"
-                                                 "*Warnings*"
-                                                 "*Agenda Commands*"
-                                                 "*Compile-Log*"
-                                                 " *Org todo*"
-                                                 "*Org Select*"
-                                                 "*Org Clock*"
-                                                 "*Org Links*"
-                                                 " *Agenda Commands*"
-                                                 "sendmail errors"
-                                                 "*GHC Error*"
-                                                 "*rustfmt-error*"
-                                                 "*xref*"
-                                                 "*ggtags-global*")
-                                         eos))
+                                               " *undo-tree*"
+                                               "*Occur*"
+                                               "*grep*"
+                                               "*Warnings*"
+                                               "*Agenda Commands*"
+                                               "*Compile-Log*"
+                                               " *Org todo*"
+                                               "*Org Select*"
+                                               "*Org Clock*"
+                                               "*Org Links*"
+                                               " *Agenda Commands*"
+                                               "sendmail errors"
+                                               "*GHC Error*"
+                                               "*rustfmt-error*"
+                                               "*xref*"
+                                               "*ggtags-global*")
+                                       eos))
 
   (add-to-list 'display-buffer-alist
-               `(,akermu/popup-buffer-regexp
-                 (display-buffer-reuse-window
-                  display-buffer-in-side-window)
-                 (side            . bottom)
-                 (window-height   . 0.4)))
+    `(,akermu/popup-buffer-regexp
+       (display-buffer-reuse-window
+         display-buffer-in-side-window)
+       (side            . bottom)
+       (window-height   . 0.4)))
 
   (add-to-list 'display-buffer-alist
-               '((major-mode . grep-mode)
-                 (display-buffer-reuse-window
-                  display-buffer-in-side-window)
-                 (side            . bottom)
-                 (window-height   . 0.4)))
+    '((major-mode . grep-mode)
+       (display-buffer-reuse-window
+         display-buffer-in-side-window)
+       (side            . bottom)
+       (window-height   . 0.4)))
 
   (add-to-list 'display-buffer-alist
-               '((lambda (&rest _)
-                   (eq this-command 'compile-goto-error))
-                 (display-buffer-reuse-window
-                  display-buffer-use-some-window)
-                 (inhibit-same-window . t)))
+    '((lambda (&rest _)
+        (eq this-command 'compile-goto-error))
+       (display-buffer-reuse-window
+         display-buffer-use-some-window)
+       (inhibit-same-window . t)))
 
   (add-to-list 'display-buffer-alist
-               `(,(rx bos "CAPTURE-" (* ascii) ".org" eos)
-                 (display-buffer-reuse-window
-                  display-buffer-in-side-window)
-                 (side            . bottom)
-                 (window-height   . 0.5)))
+    `(,(rx bos "CAPTURE-" (* ascii) ".org" eos)
+       (display-buffer-reuse-window
+         display-buffer-in-side-window)
+       (side            . bottom)
+       (window-height   . 0.5)))
 
   ;; Make other-window not repeatable
   (setq other-window-repeat-map nil)
@@ -205,11 +205,11 @@
     "Quit side windows of the current frame."
     (interactive)
     (if (and (boundp 'eldoc-box--frame) (frame-visible-p eldoc-box--frame))
-        (eldoc-box-quit-frame)
+      (eldoc-box-quit-frame)
       (let (deleted)
         (dolist (window (window-at-side-list) deleted)
           (when (eq 0 (string-match akermu/popup-buffer-regexp
-                                    (buffer-name (window-buffer window))))
+                        (buffer-name (window-buffer window))))
             (setq deleted t)
             (delete-window window)))
         (unless deleted
@@ -248,9 +248,9 @@
     "Open helm-flymake or helm-flycheck depending on the current mode."
     (interactive)
     (cond
-     ((and (boundp 'flycheck-mode) (eq flycheck-mode 't)) (helm-flycheck))
-     ((and (boundp 'flymake-mode) (eq flymake-mode 't)) (helm-flymake))
-     ('t (message "Neither flymake nor flycheck mode active")))
+      ((and (boundp 'flycheck-mode) (eq flycheck-mode 't)) (helm-flycheck))
+      ((and (boundp 'flymake-mode) (eq flymake-mode 't)) (helm-flymake))
+      ('t (message "Neither flymake nor flycheck mode active")))
     )
   ) ;; end emacs
 
@@ -267,12 +267,12 @@
   (calendar-date-style 'iso)
   (calendar-intermonth-header "KW")
   (calendar-intermonth-text
-   '(propertize
-     (format "%2d"
-             (car
-              (calendar-iso-from-absolute
-               (calendar-absolute-from-gregorian (list month day year)))))
-     'font-lock-face 'calendar-iso-week-face))
+    '(propertize
+       (format "%2d"
+         (car
+           (calendar-iso-from-absolute
+             (calendar-absolute-from-gregorian (list month day year)))))
+       'font-lock-face 'calendar-iso-week-face))
   (calendar-today-marker 'calendar-today)
   (calendar-today-visible-hook '(calendar-mark-today))
   )
@@ -310,17 +310,17 @@
   :after (eglot)
   :custom
   (exec-path-from-shell-shell-name
-   (pcase system-type
-     ('darwin "/opt/homebrew/bin/fish")
-     )
-   )
+    (pcase system-type
+      ('darwin "/opt/homebrew/bin/fish")
+      )
+    )
   :config
   (add-to-list 'eglot-server-programs
-	       (cons 'rust-mode (list (format "%s/.cargo/bin/rust-analyzer" (getenv "HOME")) :initializationOptions (list :check (list :command "clippy")
-                                                                                                                          :cargo (list :features "all")
-                                                                                                                          )
-                                      ))
-               )
+	  (cons 'rust-mode (list (format "%s/.cargo/bin/rust-analyzer" (getenv "HOME")) :initializationOptions (list :check (list :command "clippy")
+                                                                                                           :cargo (list :features "all")
+                                                                                                           )
+                       ))
+    )
   )
 
 (use-package eglot-x
@@ -348,13 +348,13 @@
       )
     )
   (org-babel-do-load-languages 'org-babel-load-languages
-                               '(
-                                 (shell . t)
-                                 (dot . t)
-                                 )
-                               )
+    '(
+       (shell . t)
+       (dot . t)
+       )
+    )
   (org-link-set-parameters "tel" :export #'org-tel-export
-                           )
+    )
   )
 
 (use-package undo-tree
@@ -363,17 +363,17 @@
   (global-undo-tree-mode)
   :custom
   (undo-tree-history-directory-alist
-   (list
-    '(".*" . "~/tmp/undo-tree"))
-   )
+    (list
+      '(".*" . "~/tmp/undo-tree"))
+    )
   )
 
 (use-package tff
   :ensure (tff :type git :host github :repo "gizmomogwai/tff")
   :bind
   (
-   ("C-1" . tff)
-   ))
+    ("C-1" . tff)
+    ))
 
 ;; dont like how the fuzzy searching works here
 ;;(use-package selectrum
@@ -388,9 +388,9 @@
   (helm-mode +1)
   :bind
   (
-   ("C-x C-f" . helm-find-files)
-   ("M-x" . helm-M-x)
-   ))
+    ("C-x C-f" . helm-find-files)
+    ("M-x" . helm-M-x)
+    ))
 
 ;;(use-package helm-flymake
 ;;  :ensure (helm-flymake :type git :host github :repo "emacs-helm/helm-flymake")
@@ -469,20 +469,20 @@
   :config
   (projectile-mode 1)
   (projectile-register-project-type
-   'dlang
-   '("dub.sdl")
-   :compile "~/bin/d build"
-   :test "~/bin/d test && ~/bin/d run dscanner -- --errorFormat=digitalmars --styleCheck"
-   :run "~/bin/d run"
-   )
+    'dlang
+    '("dub.sdl")
+    :compile "~/bin/d build"
+    :test "~/bin/d test && ~/bin/d run dscanner -- --errorFormat=digitalmars --styleCheck"
+    :run "~/bin/d run"
+    )
   )
 
 ;; TODO
 (require 'compile)
 (add-to-list 'compilation-error-regexp-alist-alist
-             '(d-scanner
-               "\\(.*?\\)(\\(.*?\\):\\(.*?\\))\\[\\(.*?\\)\\]:"
-               1 2 3 2))
+  '(d-scanner
+     "\\(.*?\\)(\\(.*?\\):\\(.*?\\))\\[\\(.*?\\)\\]:"
+     1 2 3 2))
 (use-package posframe
   :ensure t)
 
@@ -536,7 +536,7 @@
   :init
   (add-hook 'eglot-managed-mode-hook (lambda ()
                                        (add-to-list 'company-backends
-                                                    '(company-capf :with company-yasnippet))))
+                                         '(company-capf :with company-yasnippet))))
   )
 
 (use-package yasnippet-snippets
@@ -600,16 +600,16 @@ Project %(projectile-project-root)" ;; initial newline is needed for %() to work
 
 ;; begin dlang
 (c-add-style "my-d-mode"
-             '("cc-mode"
-               (c-basic-offset . 4)
-               (c-offsets-alist
-                (arglist-intro . +)
-                (arglist-close . 0)
-                (substatement-open . 0)
-                (statement-cont . +)
-                (inline-open . 0)
-                (label . +)
-                )))
+  '("cc-mode"
+     (c-basic-offset . 4)
+     (c-offsets-alist
+       (arglist-intro . +)
+       (arglist-close . 0)
+       (substatement-open . 0)
+       (statement-cont . +)
+       (inline-open . 0)
+       (label . +)
+       )))
 
 (defun my-d-mode-setup ()
   "Setup indent according to dfmt's defaults."
@@ -625,8 +625,8 @@ Project %(projectile-project-root)" ;; initial newline is needed for %() to work
   (d-mode . my-d-mode-setup)
   :config
   (add-to-list 'eglot-server-programs
-               (cons 'd-mode (list (format "%s/.code-d/bin/serve-d" (getenv "HOME"))))
-               )
+    (cons 'd-mode (list (format "%s/.code-d/bin/serve-d" (getenv "HOME"))))
+    )
   )
 ;; end dlang
 
@@ -670,85 +670,85 @@ Project %(projectile-project-root)" ;; initial newline is needed for %() to work
   (defun meow-setup ()
     (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
     (meow-motion-define-key
-     '("j" . meow-next)
-     '("k" . meow-prev)
-     '("<escape>" . ignore))
+      '("j" . meow-next)
+      '("k" . meow-prev)
+      '("<escape>" . ignore))
     (meow-leader-define-key
-     ;; Use SPC (0-9) for digit arguments.
-     '("1" . meow-digit-argument)
-     '("2" . meow-digit-argument)
-     '("3" . meow-digit-argument)
-     '("4" . meow-digit-argument)
-     '("5" . meow-digit-argument)
-     '("6" . meow-digit-argument)
-     '("7" . meow-digit-argument)
-     '("8" . meow-digit-argument)
-     '("9" . meow-digit-argument)
-     '("0" . meow-digit-argument)
-     '("/" . meow-keypad-describe-key)
-     '("?" . meow-cheatsheet))
+      ;; Use SPC (0-9) for digit arguments.
+      '("1" . meow-digit-argument)
+      '("2" . meow-digit-argument)
+      '("3" . meow-digit-argument)
+      '("4" . meow-digit-argument)
+      '("5" . meow-digit-argument)
+      '("6" . meow-digit-argument)
+      '("7" . meow-digit-argument)
+      '("8" . meow-digit-argument)
+      '("9" . meow-digit-argument)
+      '("0" . meow-digit-argument)
+      '("/" . meow-keypad-describe-key)
+      '("?" . meow-cheatsheet))
     (meow-normal-define-key
-     '("0" . meow-expand-0)
-     '("9" . meow-expand-9)
-     '("8" . meow-expand-8)
-     '("7" . meow-expand-7)
-     '("6" . meow-expand-6)
-     '("5" . meow-expand-5)
-     '("4" . meow-expand-4)
-     '("3" . meow-expand-3)
-     '("2" . meow-expand-2)
-     '("1" . meow-expand-1)
-     '("-" . negative-argument)
-     '(";" . meow-reverse)
-     '("," . meow-inner-of-thing)
-     '("." . meow-bounds-of-thing)
-     '("[" . meow-beginning-of-thing)
-     '("]" . meow-end-of-thing)
-     '("a" . meow-append)
-     '("A" . meow-open-below)
-     '("b" . meow-back-word)
-     '("B" . meow-back-symbol)
-     '("c" . meow-change)
-     '("d" . meow-delete)
-     '("D" . meow-backward-delete)
-     '("e" . meow-next-word)
-     '("E" . meow-next-symbol)
-     '("f" . meow-find)
-     '("g" . meow-cancel-selection)
-     '("G" . meow-grab)
-     '("h" . meow-left)
-     '("H" . meow-left-expand)
-     '("i" . meow-insert)
-     '("I" . meow-open-above)
-     '("j" . meow-next)
-     '("J" . meow-next-expand)
-     '("k" . meow-prev)
-     '("K" . meow-prev-expand)
-     '("l" . meow-right)
-     '("L" . meow-right-expand)
-     '("m" . meow-join)
-     '("n" . meow-search)
-     '("o" . meow-block)
-     '("O" . meow-to-block)
-     '("p" . meow-yank)
-     '("q" . meow-quit)
-     '("Q" . meow-goto-line)
-     '("r" . meow-replace)
-     '("R" . meow-swap-grab)
-     '("s" . meow-kill)
-     '("t" . meow-till)
-     '("u" . meow-undo)
-     '("U" . meow-undo-in-selection)
-     '("v" . meow-visit)
-     '("w" . meow-mark-word)
-     '("W" . meow-mark-symbol)
-     '("x" . meow-line)
-     '("X" . meow-goto-line)
-     '("y" . meow-save)
-     '("Y" . meow-sync-grab)
-     '("z" . meow-pop-selection)
-     '("'" . repeat)
-     '("<escape>" . ignore)))
+      '("0" . meow-expand-0)
+      '("9" . meow-expand-9)
+      '("8" . meow-expand-8)
+      '("7" . meow-expand-7)
+      '("6" . meow-expand-6)
+      '("5" . meow-expand-5)
+      '("4" . meow-expand-4)
+      '("3" . meow-expand-3)
+      '("2" . meow-expand-2)
+      '("1" . meow-expand-1)
+      '("-" . negative-argument)
+      '(";" . meow-reverse)
+      '("," . meow-inner-of-thing)
+      '("." . meow-bounds-of-thing)
+      '("[" . meow-beginning-of-thing)
+      '("]" . meow-end-of-thing)
+      '("a" . meow-append)
+      '("A" . meow-open-below)
+      '("b" . meow-back-word)
+      '("B" . meow-back-symbol)
+      '("c" . meow-change)
+      '("d" . meow-delete)
+      '("D" . meow-backward-delete)
+      '("e" . meow-next-word)
+      '("E" . meow-next-symbol)
+      '("f" . meow-find)
+      '("g" . meow-cancel-selection)
+      '("G" . meow-grab)
+      '("h" . meow-left)
+      '("H" . meow-left-expand)
+      '("i" . meow-insert)
+      '("I" . meow-open-above)
+      '("j" . meow-next)
+      '("J" . meow-next-expand)
+      '("k" . meow-prev)
+      '("K" . meow-prev-expand)
+      '("l" . meow-right)
+      '("L" . meow-right-expand)
+      '("m" . meow-join)
+      '("n" . meow-search)
+      '("o" . meow-block)
+      '("O" . meow-to-block)
+      '("p" . meow-yank)
+      '("q" . meow-quit)
+      '("Q" . meow-goto-line)
+      '("r" . meow-replace)
+      '("R" . meow-swap-grab)
+      '("s" . meow-kill)
+      '("t" . meow-till)
+      '("u" . meow-undo)
+      '("U" . meow-undo-in-selection)
+      '("v" . meow-visit)
+      '("w" . meow-mark-word)
+      '("W" . meow-mark-symbol)
+      '("x" . meow-line)
+      '("X" . meow-goto-line)
+      '("y" . meow-save)
+      '("Y" . meow-sync-grab)
+      '("z" . meow-pop-selection)
+      '("'" . repeat)
+      '("<escape>" . ignore)))
   :config
   (meow-setup)
   ;;(meow-global-mode 1)
@@ -771,13 +771,13 @@ Project %(projectile-project-root)" ;; initial newline is needed for %() to work
 
   :bind
   (
-   ("C-+" . outline-indent-open-fold)
-   ("C--" . outline-indent-close-fold)
-   ("C-*" . outline-indent-open-folds)
-   ("C-<tab>" . outline-indent-toggle-fold)
-   :map undo-tree-map
-   ("C-_" . outline-indent-close-folds)
-   )
+    ("C-+" . outline-indent-open-fold)
+    ("C--" . outline-indent-close-fold)
+    ("C-*" . outline-indent-open-folds)
+    ("C-<tab>" . outline-indent-toggle-fold)
+    :map undo-tree-map
+    ("C-_" . outline-indent-close-folds)
+    )
 
   :hook
   (prog-mode . (lambda () (outline-indent-minor-mode)))
