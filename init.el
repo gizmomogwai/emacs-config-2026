@@ -243,6 +243,13 @@
     (flycheck-list-errors)
     (pop-to-buffer "*Flycheck errors*"))
 
+  (defun kill-current-buffer (arg)
+    "Kill the current buffer without asking."
+    (interactive "P")
+    (if arg
+      (call-interactively 'kill-buffer)
+      (kill-buffer)))
+
   (defun smarter-move-beginning-of-line (arg)
     "Move point back to indentation or beginning of line.
        Move point to the first non-whitespace character on this line.
@@ -483,7 +490,7 @@
   (key-chord-define-global "BB" 'beginning-of-buffer)
   (key-chord-define-global "BE" 'end-of-buffer)
   (key-chord-define-global "bb" 'consult-buffer)
-  (key-chord-define-global "BR" 'kill-buffer)
+  (key-chord-define-global "BR" 'kill-current-buffer)
   (key-chord-define-global "bw" 'save-buffer)
   (key-chord-define-global "CC" 'comment-line)
   (key-chord-define-global "GS" 'magit-status)
