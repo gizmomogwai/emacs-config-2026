@@ -316,7 +316,7 @@
     )
   :config
   (add-to-list 'eglot-server-programs
-	  (cons 'rust-mode (list (format "%s/.cargo/bin/rust-analyzer" (getenv "HOME")) :initializationOptions (list :check (list :command "clippy")
+	  (cons 'rust-mode (list "rust-analyzer" :initializationOptions (list :check (list :command "clippy")
                                                                                                            :cargo (list :features "all")
                                                                                                            )
                        ))
@@ -792,6 +792,11 @@ Project %(projectile-project-root)" ;; initial newline is needed for %() to work
 
 (use-package jj-mode
   :ensure (jj-mode :type git :host github :repo "bolivier/jj-mode.el"))
+
+(use-package direnv
+  :ensure t
+  :config
+    (direnv-mode))
 
 (provide 'init)
 ;;; init.el ends here
