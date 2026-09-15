@@ -201,6 +201,11 @@
   ;; Make other-window not repeatable
   (setq other-window-repeat-map nil)
 
+  (defun apply-ansi-colors ()
+    "Colorize buffer with ansi escape codes."
+    (interactive)
+    (ansi-color-apply-on-region (point-min) (point-max)))
+
   (defun akermu/quit-window-dwim ()
     "Quit side windows of the current frame."
     (interactive)
@@ -298,12 +303,12 @@
   :after (magit)
   )
 
-(use-package exec-path-from-shell
-  :ensure t
-  :demand t
-  :config
-  (exec-path-from-shell-initialize)
-  )
+;;(use-package exec-path-from-shell
+;;  :ensure t
+;;  :demand t
+;;  :config
+;;  (exec-path-from-shell-initialize)
+;;  )
 
 (use-package rust-mode
   :ensure t
@@ -330,6 +335,12 @@
   (eglot-report-progress nil)
   :config (eglot-x-setup)
   )
+(use-package mpc-mode
+  :ensure nil ;; builtin
+  :bind (
+          :map mpc-mode-map
+          ([?\r] . mpc-play-at-point)))
+
 ;; configure org mode
 (use-package org-mode
   :ensure nil ;; use builtin
@@ -798,5 +809,23 @@ Project %(projectile-project-root)" ;; initial newline is needed for %() to work
   :config
     (direnv-mode))
 
+(use-package org-kanban
+  :ensure (org-kanban :type git :host github :repo "gizmomogwai/org-kanban"))
+
+(use-package typst-preview
+  :ensure (typst-preview :type git :host github :repo "havarddj/typst-preview.el"))
+
+(use-package typst-ts-mode
+  :ensure (:type git :host codeberg :repo "meow_king/typst-ts-mode" :branch "main"))
+
+
+(use-package typst-ts-mode
+  :ensure (:type git :host codeberg :repo "meow_king/typst-ts-mode" :branch "main")
+  :custom
+  (typst-ts-watch-options "--open")
+  (typst-ts-mode-grammar-location (expand-file-name "tree-sitter/libtree-sitter-typst.so" user-emacs-directory))
+  (typst-ts-mode-enable-raw-blocks-highlight t)
+  :config
+  (keymap-set typst-ts-mode-map "C-c C-c" #'typst-ts-tmenu))
 (provide 'init)
 ;;; init.el ends here
