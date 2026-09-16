@@ -56,7 +56,7 @@
   :demand t
 
   :bind (
-          ([f7] . switch-to-flycheck-list-errors)
+          ([f7] . consult-flycheck)
           ([remap move-beginning-of-line] . smarter-move-beginning-of-line)
           )
   
@@ -64,6 +64,16 @@
   (fill-column-indicator ((t (:weight semilight :foreground "#773838"))))
 
   :custom
+  ;; vertico
+  (context-menu-mode t)
+  (enable-recursive-minibuffers t)
+  (read-extended-command-predicate #'command-completion-default-include-p)
+  (minibuffer-prompt-properties
+    '(read-only t cursor-intangible t face minibuffer-prompt))
+  (read-file-name-completion-ignore-case t)
+  (read-buffer-completion-ignore-case t)
+  (completion-ignore-case t)
+  ;; vertico end
   (bidi-inhibit-bpa t) ;; performance
   (blink-cursor-mode nil)
   (column-number-mode t)
@@ -384,24 +394,62 @@
     ("C-1" . tff)
     ))
 
-;; dont like how the fuzzy searching works here
-;;(use-package selectrum
-;;  :ensure t
-;;  :config
-;;  (selectrum-mode +1)
-;;  )
-
-(use-package helm
+;; https://github.com/minad/vertico
+(use-package vertico
   :ensure t
+  :custom
+   (vertico-scroll-margin 0) ;; Different scroll margin
+   (vertico-count 20) ;; Show more candidates
+   (vertico-resize t) ;; Grow and shrink the Vertico minibuffer
+   (vertico-cycle t) ;; Enable cycling for `vertico-next/previous'
+  :init
+  (vertico-mode))
+(use-package consult
+  :ensure t)
+(use-package consult-flycheck
+  :ensure t)
+(use-package savehist
+  :init
+  (savehist-mode))
+(use-package recentf
+  :demand t
   :config
-  (helm-mode +1)
+  (recentf-mode 1)
+  (setq recentf-max-saved-items 50)) 
+;; https://github.com/oantolin/orderless
+(use-package orderless
+  :ensure t
+  :custom
+  ;; Configure a custom style dispatcher (see the Consult wiki)
+  ;; (orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
+  ;; (orderless-component-separator #'orderless-escapable-split-on-space)
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles partial-completion))))
+  (completion-category-defaults nil) ;; Disable defaults, use our settings
+  (completion-pcm-leading-wildcard t)) ;; Emacs 31: partial-completion behaves like substring
+;; https://github.com/minad/marginalia
+(use-package marginalia
+  :ensure t
+  :bind (:map minibuffer-local-map
+         ("M-A" . marginalia-cycle))
+  :init
+  (marginalia-mode))
+;; https://github.com/oantolin/embark
+(use-package embark
+  :ensure t
   :bind
-  (
-    ("C-x C-f" . helm-find-files)
-    ("M-x" . helm-M-x)
-    ))
+  (("C-." . embark-act)
+   ("C-;" . embark-dwim)
+   ("C-h B" . embark-bindings))
+  :init
+  (setq prefix-help-command #'embark-prefix-help-command)
+  :config
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
 
-(use-package helm-projectile
+(use-package embark-consult
   :ensure t)
 
 ;; ctrl-w catches the current line
@@ -431,17 +479,18 @@
   :config
   ;;(key-chord-define-global "FF" 'helm-projectile)
   (key-chord-define-global "uu" 'undo-tree-visualize)
-  (key-chord-define-global "xx" 'helm-M-x)
+  (key-chord-define-global "xx" 'consult-mode-command)
   (key-chord-define-global "BB" 'beginning-of-buffer)
   (key-chord-define-global "BE" 'end-of-buffer)
-  (key-chord-define-global "bb" 'helm-mini)
+  (key-chord-define-global "bb" 'consult-buffer)
   (key-chord-define-global "BR" 'kill-buffer)
   (key-chord-define-global "bw" 'save-buffer)
   (key-chord-define-global "CC" 'comment-line)
   (key-chord-define-global "GS" 'magit-status)
-  (key-chord-define-global "GG" 'goto-line)
+  (key-chord-define-global "GG" 'consult-goto-line)
+  (key-chord-define-global "gg" 'consult-ripgrep)
   (key-chord-define-global "LL" 'projectile-layout-project)
-  (key-chord-define-global "yy" 'helm-show-kill-ring)
+  (key-chord-define-global "yy" 'consult-yank-from-kill-ring)
   (key-chord-define-global "TT" 'tff)
   (key-chord-define-global "NN" 'other-window)
   (key-chord-define-global "UU" 'xref-find-references)
