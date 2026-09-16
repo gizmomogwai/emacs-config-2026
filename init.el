@@ -56,7 +56,7 @@
   :demand t
 
   :bind (
-          ([f7] . helm-flycheck-or-flymake)
+          ([f7] . switch-to-flycheck-list-errors)
           ([remap move-beginning-of-line] . smarter-move-beginning-of-line)
           )
   
@@ -227,6 +227,12 @@
   ;; maximize window on startup
   (toggle-frame-maximized)
 
+  (defun switch-to-flycheck-list-errors ()
+    "Focus flycheck error list."
+    (interactive)
+    (flycheck-list-errors)
+    (pop-to-buffer "*Flycheck errors*"))
+
   (defun smarter-move-beginning-of-line (arg)
     "Move point back to indentation or beginning of line.
        Move point to the first non-whitespace character on this line.
@@ -248,14 +254,6 @@
     "Open the emacs init file"
     (interactive)
     (find-file user-init-file)
-    )
-  (defun helm-flycheck-or-flymake ()
-    "Open helm-flymake or helm-flycheck depending on the current mode."
-    (interactive)
-    (cond
-      ((and (boundp 'flycheck-mode) (eq flycheck-mode 't)) (helm-flycheck))
-      ((and (boundp 'flymake-mode) (eq flymake-mode 't)) (helm-flymake))
-      ('t (message "Neither flymake nor flycheck mode active")))
     )
   ) ;; end emacs
 
@@ -403,13 +401,6 @@
     ("M-x" . helm-M-x)
     ))
 
-;;(use-package helm-flymake
-;;  :ensure (helm-flymake :type git :host github :repo "emacs-helm/helm-flymake")
-;;  )
-(use-package helm-flycheck
-  :ensure (helm-flycheck :type git :host github :repo "yasuyk/helm-flycheck")
-  )
-;;
 (use-package helm-projectile
   :ensure t)
 
@@ -812,20 +803,21 @@ Project %(projectile-project-root)" ;; initial newline is needed for %() to work
 (use-package org-kanban
   :ensure (org-kanban :type git :host github :repo "gizmomogwai/org-kanban"))
 
-(use-package typst-preview
-  :ensure (typst-preview :type git :host github :repo "havarddj/typst-preview.el"))
-
 (use-package typst-ts-mode
-  :ensure (:type git :host codeberg :repo "meow_king/typst-ts-mode" :branch "main"))
-
-
-(use-package typst-ts-mode
+  :after (eglot)
   :ensure (:type git :host codeberg :repo "meow_king/typst-ts-mode" :branch "main")
   :custom
   (typst-ts-watch-options "--open")
   (typst-ts-mode-grammar-location (expand-file-name "tree-sitter/libtree-sitter-typst.so" user-emacs-directory))
   (typst-ts-mode-enable-raw-blocks-highlight t)
   :config
-  (keymap-set typst-ts-mode-map "C-c C-c" #'typst-ts-tmenu))
+  (keymap-set typst-ts-mode-map "C-c C-c" #'typst-ts-tmenu)
+  (add-to-list 'eglot-server-programs
+	  (cons 'typst-ts-mode (list "tinymist"))))
+
+(use-package typst-preview
+  :after (typst-ts-mode)
+  :ensure (typst-preview :type git :host github :repo "havarddj/typst-preview.el"))
+
 (provide 'init)
 ;;; init.el ends here
