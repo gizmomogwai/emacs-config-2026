@@ -415,7 +415,7 @@
   :demand t
   :config
   (recentf-mode 1)
-  (setq recentf-max-saved-items 50)) 
+  (setq recentf-max-saved-items 150))
 ;; https://github.com/oantolin/orderless
 (use-package orderless
   :ensure t
