@@ -46,6 +46,7 @@
 (elpaca `(,@elpaca-order))
 ;; end elpaca installer from https://github.com/progfolio/elpaca#installer
 (setq use-package-verbose t)
+(setq use-package-compute-statistics t)
 
 (require 'cl-lib)
 
@@ -122,9 +123,7 @@
 
   :config
   (kill-buffer "*scratch*")
-  (add-to-list 'initial-frame-alist '(font . "Iosevka Term-19"))
-  (add-to-list 'default-frame-alist '(font . "Iosevka Term-19"))
-
+  
   ;; Disable bidi (might improve display performance)
   (setq-default bidi-paragraph-direction 'left-to-right
     bidi-paragraph-direction 'left-to-right)
@@ -278,11 +277,13 @@
   :ensure nil
   :custom
   (require-final-newline t)
+
   (find-file-visit-truename t)
   )
 
 (use-package calendar
   :ensure nil
+  :defer t
   :custom
   (calendar-date-style 'iso)
   (calendar-intermonth-header "KW")
@@ -300,17 +301,16 @@
 (use-package zenburn-theme
   :ensure t
   :demand t
-  :config (load-theme 'zenburn t)
-  )
+  :config (load-theme 'zenburn t))
 
 (use-package transient
   :ensure t
-  :demand t
+  :defer t
   )
 
 (use-package magit
   :ensure t
-  :demand t
+  :bind ("C-x g" . magit-status)
   )
 
 (use-package git-timemachine
@@ -357,13 +357,9 @@
           ([?\r] . mpc-play-at-point)))
 
 ;; configure org mode
-(use-package org-mode
-  :ensure nil ;; use builtin
+(use-package org
+  :ensure nil
   :hook (org-mode . turn-on-auto-fill)
-  )
-
-(use-package org-mode-config
-  :after (org-mode)
   :config
   (defun org-tel-export (link description format)
     "Export a tel LINK with DESCRIPTION from Org files to FORMAT."
@@ -379,14 +375,12 @@
        (dot . t)
        )
     )
-  (org-link-set-parameters "tel" :export #'org-tel-export
-    )
+  (org-link-set-parameters "tel" :export #'org-tel-export)
   )
 
 (use-package undo-tree
   :ensure t
-  :config
-  (global-undo-tree-mode)
+  :hook (elpaca-after-init . global-undo-tree-mode)
   :custom
   (undo-tree-history-directory-alist
     (list
@@ -409,23 +403,24 @@
    (vertico-count 20) ;; Show more candidates
    (vertico-resize t) ;; Grow and shrink the Vertico minibuffer
    (vertico-cycle t) ;; Enable cycling for `vertico-next/previous'
-  :init
-  (vertico-mode))
+  :hook (elpaca-after-init . vertico-mode))
 (use-package consult
-  :ensure t)
+  :ensure t
+  :defer t)
 (use-package consult-flycheck
-  :ensure t)
+  :ensure t
+  :after (consult flycheck))
 (use-package savehist
   :init
   (savehist-mode))
 (use-package recentf
-  :demand t
-  :config
-  (recentf-mode 1)
-  (setq recentf-max-saved-items 150))
+  :hook (elpaca-after-init . recentf-mode)
+  :custom
+  (recentf-max-saved-items 150))
 ;; https://github.com/oantolin/orderless
 (use-package orderless
   :ensure t
+  :after (vertico)
   :custom
   ;; Configure a custom style dispatcher (see the Consult wiki)
   ;; (orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
@@ -439,8 +434,7 @@
   :ensure t
   :bind (:map minibuffer-local-map
          ("M-A" . marginalia-cycle))
-  :init
-  (marginalia-mode))
+  :hook (minibuffer-setup . marginalia-mode))
 ;; https://github.com/oantolin/embark
 (use-package embark
   :ensure t
@@ -457,32 +451,37 @@
                  (window-parameters (mode-line-format . none)))))
 
 (use-package embark-consult
-  :ensure t)
+  :ensure t
+  :after (embark consult))
 
 ;; ctrl-w catches the current line
 (use-package whole-line-or-region
   :ensure t
-  :config (whole-line-or-region-global-mode))
+  :hook (elpaca-after-init . whole-line-or-region-global-mode))
 
 ;; nice to see some graphs
 (use-package eplot
   :ensure (eplot :type git :host github :repo "larsmagne/eplot")
+  :defer t
   )
 
 ;; basics like tabs, spaces for editing
 (use-package editorconfig
   :ensure t
-  :config (editorconfig-mode 1))
+  :hook (prog-mode . editorconfig-mode))
 
 ;; emacs package dev
 (use-package package-lint
-  :ensure t)
+  :ensure t
+  :defer t)
 (use-package ecukes
-  :ensure t)
+  :ensure t
+  :defer t)
 
 
 (use-package key-chord
   :ensure t
+  :hook (elpaca-after-init . key-chord-mode)
   :config
   ;;(key-chord-define-global "FF" 'helm-projectile)
   (key-chord-define-global "uu" 'undo-tree-visualize)
@@ -501,17 +500,17 @@
   (key-chord-define-global "TT" 'tff)
   (key-chord-define-global "NN" 'other-window)
   (key-chord-define-global "UU" 'xref-find-references)
-  (key-chord-mode 1)
   )
 
 (use-package move-text
   :ensure t
-  :config (move-text-default-bindings)
+  :hook (elpaca-after-init . move-text-default-bindings)
   )
 
 ;; goto last change
 (use-package goto-chg
-  :ensure t)
+  :ensure t
+  :defer t)
 
 (use-package which-key
   :ensure t
@@ -520,12 +519,13 @@
 
 (use-package deadgrep
   :ensure (deadgrep :type git :host github :repo "Wilfred/deadgrep")
+  :defer t
   )
 
 (use-package projectile
   :ensure t
+  :hook (elpaca-after-init . projectile-mode)
   :config
-  (projectile-mode 1)
   (projectile-register-project-type
     'dlang
     '("dub.sdl")
@@ -547,50 +547,54 @@
 ;; TODO
 (use-package company
   :ensure t
-  :config (global-company-mode 1)
+  :hook (prog-mode . company-mode)
   )
 
 (use-package json-mode
   :ensure t
+  :defer t
   )
 
 
 (use-package haml-mode
   :ensure t
+  :defer t
   )
 
-;;(use-package yaml-mode
-;;  :ensure t
-;;  )
 (use-package yaml-pro
   :ensure t
+  :defer t
   )
 
 (use-package markdown-mode
   :ensure t
+  :mode "\\.md\\'"
   )
 
 (use-package markdown-toc
   :ensure t
+  :after (markdown-mode)
   )
 
 (use-package plantuml-mode
   :ensure t
+  :mode ("\\.puml\\'" "\\.plantuml\\'")
   :config
   (plantuml-set-output-type "png")
   )
 
 (use-package graphviz-dot-mode
   :ensure t
+  :mode ("\\.dot\\'" "\\.gv\\'")
   )
 
 (use-package ztree
-  :ensure t)
+  :ensure t
+  :defer t)
 
 (use-package yasnippet
   :ensure t
-  :config
-  (yas-global-mode 1)
+  :hook (prog-mode . yas-minor-mode)
   :init
   (add-hook 'eglot-managed-mode-hook (lambda ()
                                        (add-to-list 'company-backends
@@ -599,11 +603,12 @@
 
 (use-package yasnippet-snippets
   :ensure t
-  :after yasnippet)
+  :after (yasnippet))
 
 
 (use-package hydra
-  :ensure t)
+  :ensure t
+  :defer t)
 
 (use-package projectile-hydra
   :preface (provide 'projectile-hydra)
@@ -690,127 +695,31 @@ Project %(projectile-project-root)" ;; initial newline is needed for %() to work
 
 (use-package nxml-mode
   :ensure nil
+  :defer t
   :custom
   (nxml-slash-auto-complete-flag t)
   )
 
-;;(use-package sideline
-;;  :ensure t
-;;  :custom
-;;  (sideline-display-backend-name t)
-;;  (sideline-backends-right '(sideline-blame sideline-eglot))
-;;  )
-
-;;(use-package sideline-blame :ensure t)
-;;(use-package sideline-eglot :ensure t)
-;;(use-package sideline-flycheck :ensure t)
-;;(use-package sideline-flymake :ensure t)
-;;(use-package sideline-eldoc :ensure (sideline-eldoc :type git :host github :repo "ginqi7/sideline-eldoc"))
-
 (use-package eldoc-box
-  :ensure t)
+  :ensure t
+  :hook (prog-mode . eldoc-box-hover-mode))
 
 (use-package jinx
-  :ensure t)
+  :ensure t
+  :defer t)
 
 (use-package minimap
-  :ensure t)
+  :ensure t
+  :defer t)
 (use-package eat
-  :ensure t)
+  :ensure t
+  :defer t)
 (use-package newsticker
   :ensure nil
+  :defer t
   :custom
   (newsticker-url-list '(("Emacs News" "https://sachachua.com/blog/category/emacs-news/feed" nil nil nil))))
 
-(use-package meow
-  :ensure t
-  :init
-  (defun meow-setup ()
-    (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
-    (meow-motion-define-key
-      '("j" . meow-next)
-      '("k" . meow-prev)
-      '("<escape>" . ignore))
-    (meow-leader-define-key
-      ;; Use SPC (0-9) for digit arguments.
-      '("1" . meow-digit-argument)
-      '("2" . meow-digit-argument)
-      '("3" . meow-digit-argument)
-      '("4" . meow-digit-argument)
-      '("5" . meow-digit-argument)
-      '("6" . meow-digit-argument)
-      '("7" . meow-digit-argument)
-      '("8" . meow-digit-argument)
-      '("9" . meow-digit-argument)
-      '("0" . meow-digit-argument)
-      '("/" . meow-keypad-describe-key)
-      '("?" . meow-cheatsheet))
-    (meow-normal-define-key
-      '("0" . meow-expand-0)
-      '("9" . meow-expand-9)
-      '("8" . meow-expand-8)
-      '("7" . meow-expand-7)
-      '("6" . meow-expand-6)
-      '("5" . meow-expand-5)
-      '("4" . meow-expand-4)
-      '("3" . meow-expand-3)
-      '("2" . meow-expand-2)
-      '("1" . meow-expand-1)
-      '("-" . negative-argument)
-      '(";" . meow-reverse)
-      '("," . meow-inner-of-thing)
-      '("." . meow-bounds-of-thing)
-      '("[" . meow-beginning-of-thing)
-      '("]" . meow-end-of-thing)
-      '("a" . meow-append)
-      '("A" . meow-open-below)
-      '("b" . meow-back-word)
-      '("B" . meow-back-symbol)
-      '("c" . meow-change)
-      '("d" . meow-delete)
-      '("D" . meow-backward-delete)
-      '("e" . meow-next-word)
-      '("E" . meow-next-symbol)
-      '("f" . meow-find)
-      '("g" . meow-cancel-selection)
-      '("G" . meow-grab)
-      '("h" . meow-left)
-      '("H" . meow-left-expand)
-      '("i" . meow-insert)
-      '("I" . meow-open-above)
-      '("j" . meow-next)
-      '("J" . meow-next-expand)
-      '("k" . meow-prev)
-      '("K" . meow-prev-expand)
-      '("l" . meow-right)
-      '("L" . meow-right-expand)
-      '("m" . meow-join)
-      '("n" . meow-search)
-      '("o" . meow-block)
-      '("O" . meow-to-block)
-      '("p" . meow-yank)
-      '("q" . meow-quit)
-      '("Q" . meow-goto-line)
-      '("r" . meow-replace)
-      '("R" . meow-swap-grab)
-      '("s" . meow-kill)
-      '("t" . meow-till)
-      '("u" . meow-undo)
-      '("U" . meow-undo-in-selection)
-      '("v" . meow-visit)
-      '("w" . meow-mark-word)
-      '("W" . meow-mark-symbol)
-      '("x" . meow-line)
-      '("X" . meow-goto-line)
-      '("y" . meow-save)
-      '("Y" . meow-sync-grab)
-      '("z" . meow-pop-selection)
-      '("'" . repeat)
-      '("<escape>" . ignore)))
-  :config
-  (meow-setup)
-  ;;(meow-global-mode 1)
-  )
 
 (use-package flycheck
   :ensure t
@@ -843,13 +752,13 @@ Project %(projectile-project-root)" ;; initial newline is needed for %() to work
 
 (use-package indent-bars
   :ensure t
-
   :hook
   (prog-mode . indent-bars-mode)
   )
 
 (use-package jj-mode
-  :ensure (jj-mode :type git :host github :repo "bolivier/jj-mode.el"))
+  :ensure (jj-mode :type git :host github :repo "bolivier/jj-mode.el")
+  :defer t)
 
 (use-package direnv
   :ensure t
@@ -857,11 +766,12 @@ Project %(projectile-project-root)" ;; initial newline is needed for %() to work
     (direnv-mode))
 
 (use-package org-kanban
-  :ensure (org-kanban :type git :host github :repo "gizmomogwai/org-kanban"))
+  :ensure (org-kanban :type git :host github :repo "gizmomogwai/org-kanban")
+  :after (org))
 
 (use-package typst-ts-mode
-  :after (eglot)
   :ensure (:type git :host codeberg :repo "meow_king/typst-ts-mode" :branch "main")
+  :mode "\\.typ\\'"
   :custom
   (typst-ts-watch-options "--open")
   (typst-ts-mode-grammar-location (expand-file-name "tree-sitter/libtree-sitter-typst.so" user-emacs-directory))
@@ -874,6 +784,10 @@ Project %(projectile-project-root)" ;; initial newline is needed for %() to work
 (use-package typst-preview
   :after (typst-ts-mode)
   :ensure (typst-preview :type git :host github :repo "havarddj/typst-preview.el"))
+
+(use-package nix-mode
+  :ensure t
+  :mode "\\.nix\\'")
 
 (provide 'init)
 ;;; init.el ends here
