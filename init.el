@@ -400,8 +400,8 @@
   :ensure t
   :custom
    (vertico-scroll-margin 0) ;; Different scroll margin
-   (vertico-count 20) ;; Show more candidates
-   (vertico-resize t) ;; Grow and shrink the Vertico minibuffer
+   (vertico-count 10) ;; Show more candidates
+   (vertico-resize nil) ;; Grow and shrink the Vertico minibuffer
    (vertico-cycle t) ;; Enable cycling for `vertico-next/previous'
   :hook (elpaca-after-init . vertico-mode))
 (use-package consult
