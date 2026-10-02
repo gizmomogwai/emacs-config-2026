@@ -611,12 +611,11 @@
 
 
 (use-package hydra
-  :ensure t
-  :defer t)
+  :ensure t)
 
 (use-package projectile-hydra
   :preface (provide 'projectile-hydra)
-  :after (hydra projectile key-chord magit deadgrep)
+  :after (hydra projectile key-chord)
   :config
   (defhydra projectile-hydra (:columns 4)
     "
