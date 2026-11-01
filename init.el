@@ -759,9 +759,13 @@ Project %(projectile-project-root)" ;; initial newline is needed for %() to work
   (prog-mode . indent-bars-mode)
   )
 
-(use-package jj-mode
-  :ensure (jj-mode :type git :host github :repo "bolivier/jj-mode.el")
+;;(use-package jj-mode
+;;  :ensure (jj-mode :type git :host github :repo "bolivier/jj-mode.el")
+;;  :defer t)
+(use-package majutsu
+  :ensure (majutsu :type git :host github :repo "0WD0/majutsu")
   :defer t)
+
 
 (use-package direnv
   :ensure t
