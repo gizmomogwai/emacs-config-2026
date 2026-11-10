@@ -123,7 +123,7 @@
 
   :config
   (kill-buffer "*scratch*")
-  
+
   ;; Disable bidi (might improve display performance)
   (setq-default bidi-paragraph-direction 'left-to-right
     bidi-paragraph-direction 'left-to-right)
@@ -131,7 +131,7 @@
   (defvar emacs-var-directory (expand-file-name "var/" user-emacs-directory) "Base directory for saving data")
   (setq auto-save-list-file-prefix (expand-file-name "auto-save/save-" emacs-var-directory))
   (setq backup-directory-alist `(("." . ,(concat emacs-var-directory "backup"))))
-
+  (setq lock-file-name-transforms '(("\\`/.*/\\([^/]+\\)\\'" "/var/tmp/\\1" t)))
   ;; Customize
   (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
   (load custom-file t)
@@ -364,6 +364,8 @@
 (use-package org
   :ensure nil
   :hook (org-mode . turn-on-auto-fill)
+  :custom
+  (org-ditaa-default-exec-mode "ditaa")
   :config
   (defun org-tel-export (link description format)
     "Export a tel LINK with DESCRIPTION from Org files to FORMAT."
@@ -377,6 +379,7 @@
     '(
        (shell . t)
        (dot . t)
+       (ditaa . t)
        )
     )
   (org-link-set-parameters "tel" :export #'org-tel-export)
