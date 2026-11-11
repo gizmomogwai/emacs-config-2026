@@ -271,10 +271,10 @@
     (interactive)
     (find-file user-init-file)
     )
-  (defun jj-log-or-magit-status ()
-    "Use either jj-log or magit-status depending if jj is available."
+  (defun jj-or-git-status ()
+    "Use either `majutsu-log or `magit-status depending if jj is available."
     (interactive)
-    (if (locate-dominating-file (buffer-file-name) ".jj") (jj-log) (magit-status)))
+    (if (locate-dominating-file (buffer-file-name) ".jj") (majutsu-log) (magit-status)))
   ) ;; end emacs
 
 (use-package files
@@ -499,7 +499,7 @@
   (key-chord-define-global "BR" 'kill-current-buffer)
   (key-chord-define-global "bw" 'save-buffer)
   (key-chord-define-global "CC" 'comment-line)
-  (key-chord-define-global "GS" 'jj-log-or-magit-status)
+  (key-chord-define-global "GS" 'jj-or-git-status)
   (key-chord-define-global "GG" 'consult-goto-line)
   (key-chord-define-global "gg" 'consult-ripgrep)
   (key-chord-define-global "LL" 'projectile-layout-project)
