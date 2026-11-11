@@ -422,6 +422,90 @@
 (use-package savehist
   :init
   (savehist-mode))
+;; Named workspaces: open buffers and window layout, saved with desktop.el.
+;; M-x workspace-save / workspace-open, or from the shell: emacs --workspace NAME
+(use-package desktop
+  :ensure nil
+  :demand t
+  :custom
+  (desktop-load-locked-desktop 'check-pid)
+  (desktop-file-name-format 'tilde) ;; store ~/... paths, portable between machines
+  :config
+  (defvar workspace-directory (expand-file-name "workspaces/" emacs-var-directory)
+    "One subdirectory per workspace, each holding a desktop file.")
+  (defvar workspace-current nil "Name of the workspace opened or saved last.")
+  (defvar workspace-buffers nil "Buffers restored by the last `workspace-open'.")
+  (defvar-local workspace-buffer-comment nil "Comment shown next to this buffer in `workspace-switch-buffer'.")
+  (add-to-list 'desktop-locals-to-save 'workspace-buffer-comment)
+  ;; Allow it as file-local variable without a prompt, e.g. -*- workspace-buffer-comment: "startup tweaks" -*-
+  (put 'workspace-buffer-comment 'safe-local-variable #'stringp)
+
+  (defun workspace-comment-buffer (comment)
+    "Set COMMENT for the current buffer. Saved with the next `workspace-save'."
+    (interactive (list (read-string "Comment: " workspace-buffer-comment)))
+    (setq workspace-buffer-comment (unless (string-empty-p comment) comment)))
+
+  (defun workspace-names ()
+    (when (file-directory-p workspace-directory)
+      (directory-files workspace-directory nil directory-files-no-dot-files-regexp)))
+
+  (defun workspace-save (name)
+    "Save open buffers and window layout as workspace NAME."
+    (interactive (list (completing-read "Save workspace: " (workspace-names) nil nil nil nil workspace-current)))
+    (let ((directory (file-name-as-directory (expand-file-name name workspace-directory))))
+      (make-directory directory t)
+      (let ((file (desktop-full-file-name directory)))
+        (when (file-exists-p file)
+          (unless (or (equal name workspace-current) (yes-or-no-p (format "Overwrite workspace %s? " name)))
+            (user-error "Not saved"))
+          ;; Replaces desktop's own "Desktop file is more recent" question.
+          (setq desktop-file-modtime (file-attribute-modification-time (file-attributes file)))))
+      (desktop-save directory t)
+      (setq workspace-current name)
+      (message "Saved workspace %s" name)))
+
+  (defun workspace-open (name)
+    "Open workspace NAME, replacing the current buffers and window layout."
+    (interactive (list (completing-read "Open workspace: " (workspace-names) nil t)))
+    (let ((directory (file-name-as-directory (expand-file-name name workspace-directory))))
+      (unless (file-exists-p (desktop-full-file-name directory))
+        (user-error "No workspace named %s" name))
+      ;; Collect exactly the buffers desktop restores, not ones modes create on the side (e.g. *direnv*).
+      (let* ((restored nil)
+              (collect (lambda (buffer) (when (bufferp buffer) (push buffer restored)) buffer)))
+        (advice-add 'desktop-create-buffer :filter-return collect)
+        (unwind-protect (desktop-read directory)
+          (advice-remove 'desktop-create-buffer collect))
+        (setq workspace-buffers (nreverse restored)))
+      (setq workspace-current name)
+      ;; Timer, so the selector also works at startup and after the name prompt closed.
+      (run-at-time 0 nil #'workspace-switch-buffer)))
+
+  (defun workspace-switch-buffer ()
+    "Switch to a buffer of the workspace opened last."
+    (interactive)
+    (let ((names (mapcar #'buffer-name (seq-filter #'buffer-live-p workspace-buffers))))
+      (unless names
+        (user-error "No buffers from a workspace"))
+      (let ((completion-extra-properties
+              (list :annotation-function
+                (lambda (name)
+                  ;; desktop restores its saved value after the file is opened; the file's own comment wins.
+                  (when-let* ((buffer (get-buffer name))
+                               (comment (or (alist-get 'workspace-buffer-comment (buffer-local-value 'file-local-variables-alist buffer))
+                                          (buffer-local-value 'workspace-buffer-comment buffer))))
+                    (concat "  " (propertize comment 'face 'font-lock-comment-face)))))))
+        (switch-to-buffer (completing-read (format "Buffer in %s: " workspace-current) names nil t)))))
+
+  ;; Wait for elpaca, so major modes of restored files are available.
+  (add-to-list 'command-switch-alist
+    (cons "--workspace"
+      (lambda (_switch)
+        (let ((name (pop command-line-args-left)))
+          (if elpaca-after-init-time
+            (workspace-open name)
+            (add-hook 'elpaca-after-init-hook (lambda () (workspace-open name)) t)))))))
+
 (use-package recentf
   :hook (elpaca-after-init . recentf-mode)
   :custom
@@ -802,4 +886,9 @@ Project %(projectile-project-root)" ;; initial newline is needed for %() to work
   :mode "\\.nix\\'")
 
 (provide 'init)
+
 ;;; init.el ends here
+
+;; Local Variables:
+;; workspace-buffer-comment: "emacs"
+;; End:
