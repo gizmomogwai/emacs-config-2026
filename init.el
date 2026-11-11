@@ -469,6 +469,9 @@
     (let ((directory (file-name-as-directory (expand-file-name name workspace-directory))))
       (unless (file-exists-p (desktop-full-file-name directory))
         (user-error "No workspace named %s" name))
+      ;; desktop-read does nothing while this Emacs holds the lock of the desktop loaded last.
+      (when desktop-dirname
+        (desktop-release-lock))
       ;; Collect exactly the buffers desktop restores, not ones modes create on the side (e.g. *direnv*).
       (let* ((restored nil)
               (collect (lambda (buffer) (when (bufferp buffer) (push buffer restored)) buffer)))
@@ -483,18 +486,38 @@
   (defun workspace-switch-buffer ()
     "Switch to a buffer of the workspace opened last."
     (interactive)
-    (let ((names (mapcar #'buffer-name (seq-filter #'buffer-live-p workspace-buffers))))
-      (unless names
+    (let* ((entries
+             (mapcar (lambda (buffer)
+                       ;; desktop restores its saved value after the file is opened; the file's own comment wins.
+                       (cons (or (alist-get 'workspace-buffer-comment (buffer-local-value 'file-local-variables-alist buffer))
+                               (buffer-local-value 'workspace-buffer-comment buffer)
+                               "")
+                         (buffer-name buffer)))
+               (seq-filter #'buffer-live-p workspace-buffers)))
+            ;; By comment, buffers without one last, then by name.
+            (entries (sort entries
+                       (lambda (a b)
+                         (cond ((string-empty-p (car a)) (and (string-empty-p (car b)) (string< (cdr a) (cdr b))))
+                           ((string-empty-p (car b)) t)
+                           ((string= (car a) (car b)) (string< (cdr a) (cdr b)))
+                           (t (string< (car a) (car b)))))))
+            (width (apply #'max 0 (mapcar (lambda (entry) (string-width (car entry))) entries)))
+            (candidates
+              (mapcar (lambda (entry)
+                        (cons (concat (propertize (string-pad (car entry) width) 'face 'font-lock-comment-face)
+                                (if (> width 0) "  " "")
+                                (cdr entry))
+                          (cdr entry)))
+                entries))
+            ;; Keep this order; vertico would otherwise sort by history and length.
+            (table (lambda (string predicate action)
+                     (if (eq action 'metadata)
+                       '(metadata (display-sort-function . identity) (cycle-sort-function . identity))
+                       (complete-with-action action candidates string predicate)))))
+      (unless candidates
         (user-error "No buffers from a workspace"))
-      (let ((completion-extra-properties
-              (list :annotation-function
-                (lambda (name)
-                  ;; desktop restores its saved value after the file is opened; the file's own comment wins.
-                  (when-let* ((buffer (get-buffer name))
-                               (comment (or (alist-get 'workspace-buffer-comment (buffer-local-value 'file-local-variables-alist buffer))
-                                          (buffer-local-value 'workspace-buffer-comment buffer))))
-                    (concat "  " (propertize comment 'face 'font-lock-comment-face)))))))
-        (switch-to-buffer (completing-read (format "Buffer in %s: " workspace-current) names nil t)))))
+      (switch-to-buffer
+        (cdr (assoc (completing-read (format "Buffer in %s: " workspace-current) table nil t) candidates)))))
 
   ;; Wait for elpaca, so major modes of restored files are available.
   (add-to-list 'command-switch-alist
