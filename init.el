@@ -132,9 +132,8 @@
   (setq auto-save-list-file-prefix (expand-file-name "auto-save/save-" emacs-var-directory))
   (setq backup-directory-alist `(("." . ,(concat emacs-var-directory "backup"))))
   (setq lock-file-name-transforms '(("\\`/.*/\\([^/]+\\)\\'" "/var/tmp/\\1" t)))
-  ;; Customize
-  (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-  (load custom-file t)
+  ;; Customize: not used, settings live in this file. Throwaway file, so answers like "always allow" don't edit init.el.
+  (setq custom-file (make-temp-file "emacs-custom-" nil ".el"))
   ;; Enable disabled commands
   (setq disabled-command-function nil)
 
