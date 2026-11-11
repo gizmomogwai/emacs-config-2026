@@ -340,10 +340,12 @@
     )
   :config
   (add-to-list 'eglot-server-programs
-	  (cons 'rust-mode (list "rust-analyzer" :initializationOptions (list :check (list :command "clippy")
-                                                                                                           :cargo (list :features "all")
-                                                                                                           )
-                       ))
+	  (cons 'rust-mode (lambda (&rest _)
+                       ;; pinned toolchains (rust-toolchain.toml) often lack the component; the rustup shim then loops
+                       (call-process "rustup" nil nil nil "component" "add" "rust-analyzer")
+                       (list "rust-analyzer" :initializationOptions (list :check (list :command "clippy")
+                                                                          :cargo (list :features "all")
+                                                                          ))))
     )
   )
 
